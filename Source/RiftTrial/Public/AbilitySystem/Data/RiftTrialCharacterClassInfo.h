@@ -22,33 +22,28 @@ USTRUCT(BlueprintType)
 struct FCharacterClassDefaultInfo
 {
     GENERATED_BODY()
-    
-    UPROPERTY(EditDefaultsOnly, Category="Class Defaults")
-    TSubclassOf<UGameplayEffect> PrimaryAttributes;
-    
+
+    // 英雄基础属性 GE（所有基础属性在此 GE 中设定）
+    UPROPERTY(EditDefaultsOnly, Category = "Class Defaults")
+    TSubclassOf<UGameplayEffect> DefaultAttributes;
 };
 
-/**
- * 
- */
 UCLASS()
 class RIFTTRIAL_API URiftTrialCharacterClassInfo : public UDataAsset
 {
     GENERATED_BODY()
 public:
-    
-    UPROPERTY(EditDefaultsOnly, Category="Character Class Defaults")
+    // 英雄职业 → 默认属性 GE
+    UPROPERTY(EditDefaultsOnly, Category = "Character Class Defaults")
     TMap<ECharacterClass, FCharacterClassDefaultInfo> CharacterClassInformation;
-    
-    UPROPERTY(EditDefaultsOnly, Category="Common Class Defaults")
-    TSubclassOf<UGameplayEffect> SecondaryAttributes;
-    
-    UPROPERTY(EditDefaultsOnly, Category="Common Class Defaults")
-    TSubclassOf<UGameplayEffect> VitalAttributes;
-    
-    //添加所有Enemy共有的Ability
-    UPROPERTY(EditDefaultsOnly, Category="Common Class Defaults")
+
+    // 小兵等非英雄单位共用属性 GE
+    UPROPERTY(EditDefaultsOnly, Category = "Common Class Defaults")
+    TSubclassOf<UGameplayEffect> MinionDefaultAttributes;
+
+    // 所有单位共有的 Ability
+    UPROPERTY(EditDefaultsOnly, Category = "Common Class Defaults")
     TArray<TSubclassOf<UGameplayAbility>> CommonAbilities;
-    
-    FCharacterClassDefaultInfo GetClassDefaultInfo(ECharacterClass characterClass);
+
+    FCharacterClassDefaultInfo GetClassDefaultInfo(ECharacterClass CharacterClass);
 };

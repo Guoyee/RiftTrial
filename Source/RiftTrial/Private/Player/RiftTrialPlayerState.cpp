@@ -21,6 +21,7 @@ void ARiftTrialPlayerState::GetLifetimeReplicatedProps(TArray<class FLifetimePro
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
     DOREPLIFETIME(ARiftTrialPlayerState, Level);
+    DOREPLIFETIME(ARiftTrialPlayerState, AvailableSkillPoints);
 }
 
 UAbilitySystemComponent* ARiftTrialPlayerState::GetAbilitySystemComponent() const
@@ -30,5 +31,10 @@ UAbilitySystemComponent* ARiftTrialPlayerState::GetAbilitySystemComponent() cons
 
 void ARiftTrialPlayerState::OnRep_Level(int32 OldLevel)
 {
-    
+
+}
+
+void ARiftTrialPlayerState::OnRep_AvailableSkillPoints(int32 OldValue)
+{
+
 }

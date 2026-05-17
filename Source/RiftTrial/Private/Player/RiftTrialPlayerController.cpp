@@ -178,12 +178,12 @@ URiftTrialAbilitySystemComponent* ARiftTrialPlayerController::GetASC()
 void ARiftTrialPlayerController::BeginPlay()
 {
     Super::BeginPlay();
-    check(AuraContext);
+    check(RTContext);
     
     UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
     if (Subsystem)
     {
-    Subsystem->AddMappingContext(AuraContext, 0);
+    Subsystem->AddMappingContext(RTContext, 0);
     }
     
     bShowMouseCursor = true;

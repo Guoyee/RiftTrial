@@ -79,5 +79,6 @@ Plugins/**/Intermediate/*
 # Cache files for the editor to use
 DerivedDataCache/*
 
-# Source art assets (Blueprints under Content/ are tracked)
-Content/Assets/*
+# Content — only Blueprints are tracked
+Content/*
+!Content/BluePrints/

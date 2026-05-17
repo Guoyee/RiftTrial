@@ -6,65 +6,83 @@
 #include "GameplayTagContainer.h"
 
 /**
- * RiftTrialGameplayTags
- * 
- * Singleton containing native Gameplay Tags
+ * RiftTrialGameplayTags — native GameplayTags 单例
  */
-
 struct FRiftTrialGameplayTags
 {
 public:
-    static const FRiftTrialGameplayTags& Get() {return SingletonGameplayTags;}
+    static const FRiftTrialGameplayTags& Get() { return SingletonGameplayTags; }
     static void InitializeNativeGameplayTags();
-    
-    FGameplayTag Attributes_Primary_Strength;
-    FGameplayTag Attributes_Primary_Intelligence;
-    FGameplayTag Attributes_Primary_Resilience;
-    FGameplayTag Attributes_Primary_Vigor;
-    
-    FGameplayTag Attributes_Secondary_Armor;
-    FGameplayTag Attributes_Secondary_ArmorPenetration;
-    FGameplayTag Attributes_Secondary_BlockChance;
-    FGameplayTag Attributes_Secondary_CriticalHitChance;
-    FGameplayTag Attributes_Secondary_CriticalHitDamage;
-    FGameplayTag Attributes_Secondary_CriticalHitResistance;
-    FGameplayTag Attributes_Secondary_HealthRegeneration;
-    FGameplayTag Attributes_Secondary_ManaRegeneration;
-    FGameplayTag Attributes_Secondary_MaxHealth;
-    FGameplayTag Attributes_Secondary_MaxMana;
-    FGameplayTag Attributes_Secondary_AttackSpeed;
-    
+
+    // ===== Vital =====
+    FGameplayTag Attributes_Vital_Health;
+    FGameplayTag Attributes_Vital_MaxHealth;
+    FGameplayTag Attributes_Vital_Mana;
+    FGameplayTag Attributes_Vital_MaxMana;
+
+    // ===== Offense =====
+    FGameplayTag Attributes_Offense_PhysicalAttack;
+    FGameplayTag Attributes_Offense_MagicalAttack;
+    FGameplayTag Attributes_Offense_AttackSpeed;
+    FGameplayTag Attributes_Offense_CooldownReduction;
+    FGameplayTag Attributes_Offense_CritChance;
+
+    // ===== Defense =====
+    FGameplayTag Attributes_Defense_Armor;
+    FGameplayTag Attributes_Defense_MagicResistance;
+
+    // ===== Penetration =====
+    FGameplayTag Attributes_Penetration_ArmorFlat;
+    FGameplayTag Attributes_Penetration_ArmorPercent;
+    FGameplayTag Attributes_Penetration_MagicFlat;
+    FGameplayTag Attributes_Penetration_MagicPercent;
+
+    // ===== Base =====
+    FGameplayTag Attributes_Base_MoveSpeed;
+
+    // ===== Utility =====
+    FGameplayTag Attributes_Utility_AttackRange;
+    FGameplayTag Attributes_Utility_HealthRegeneration;
+    FGameplayTag Attributes_Utility_ManaRegeneration;
+    FGameplayTag Attributes_Utility_Tenacity;
+
+    // ===== Input =====
     FGameplayTag InputTag_LMB;
     FGameplayTag InputTag_RMB;
     FGameplayTag InputTag_1;
     FGameplayTag InputTag_2;
     FGameplayTag InputTag_3;
     FGameplayTag InputTag_4;
-    
+    FGameplayTag InputTag_5;
+    FGameplayTag InputTag_6;
+    FGameplayTag InputTag_Q;
+    FGameplayTag InputTag_W;
+    FGameplayTag InputTag_E;
+    FGameplayTag InputTag_R;
+    FGameplayTag InputTag_A;
+    FGameplayTag InputTag_S;
+    FGameplayTag InputTag_D;
+    FGameplayTag InputTag_F;
+
+    // ===== Damage =====
     FGameplayTag Damage;
-    FGameplayTag Damage_Fire;
-    FGameplayTag Damage_Lightning;
-    FGameplayTag Damage_Arcane;
     FGameplayTag Damage_Physical;
+    FGameplayTag Damage_Magical;
 
     TMap<FGameplayTag, FGameplayTag> DamageTypeToResistances;
 
-    FGameplayTag Attributes_Resistance_Fire;
-    FGameplayTag Attributes_Resistance_Lightning;
-    FGameplayTag Attributes_Resistance_Arcane;
-    FGameplayTag Attributes_Resistance_Physical;
-
+    // ===== Effects =====
     FGameplayTag Effects_HitReact;
 
+    // ===== Abilities =====
     FGameplayTag Ability_Attack_Ranged;
     FGameplayTag Ability_Attack_Melee;
     FGameplayTag Cooldown_Attack;
     FGameplayTag Event_Montage_SpawnProjectile;
-    
+
 private:
     static FRiftTrialGameplayTags SingletonGameplayTags;
 
-    // [Claude] 禁止拷贝，保护单例不被复制
     FRiftTrialGameplayTags() = default;
     FRiftTrialGameplayTags(const FRiftTrialGameplayTags&) = delete;
     FRiftTrialGameplayTags& operator=(const FRiftTrialGameplayTags&) = delete;

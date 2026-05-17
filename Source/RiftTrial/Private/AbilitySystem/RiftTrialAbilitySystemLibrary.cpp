@@ -84,6 +84,6 @@ void URiftTrialAbilitySystemLibrary::SetIsCriticalHit(UPARAM(ref) FGameplayEffec
 {
     if (FRiftTrialGameplayEffectContext* AuraEffectContext = static_cast<FRiftTrialGameplayEffectContext*>(EffectContextHandle.Get()))
     {
-        AuraEffectContext->SetIsBlockedHit(bInIsCriticalHit);
+        AuraEffectContext->SetIsCriticalHit(bInIsCriticalHit);
     }
 }

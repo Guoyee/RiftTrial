@@ -40,7 +40,7 @@ protected:
     
 private:
     UPROPERTY(EditAnywhere, Category="Input")
-    TObjectPtr<UInputMappingContext> AuraContext;
+    TObjectPtr<UInputMappingContext> RTContext;
     
     UPROPERTY(EditAnywhere, Category="Input")
     TObjectPtr<UInputAction> MoveAction;

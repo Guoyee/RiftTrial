@@ -36,22 +36,27 @@ UAnimMontage* ARiftTrialCharacterBase::GetHitReactMontage_Implementation()
 
 void ARiftTrialCharacterBase::Die()
 {
-    Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, false));
+    if (Weapon && Weapon->GetSkeletalMeshAsset())
+    {
+        Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, false));
+    }
     MulticastHandleDeath();
 }
 
-//该函数会在客户端和服务端调用
 void ARiftTrialCharacterBase::MulticastHandleDeath_Implementation()
 {
-    Weapon->SetSimulatePhysics(true);
-    Weapon->SetEnableGravity(true);
-    Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-    
+    if (Weapon && Weapon->GetSkeletalMeshAsset())
+    {
+        Weapon->SetSimulatePhysics(true);
+        Weapon->SetEnableGravity(true);
+        Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+    }
+
     GetMesh()->SetSimulatePhysics(true);
     GetMesh()->SetEnableGravity(true);
     GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
     GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
-    
+
     GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     OnDeath();
     Dissolve();
@@ -65,8 +70,12 @@ void ARiftTrialCharacterBase::BeginPlay()
 
 FVector ARiftTrialCharacterBase::GetCombatSocketLocation()
 {
-    check(Weapon);
-    return Weapon->GetSocketLocation(WeaponTipSocketName);
+    if (Weapon && Weapon->GetSkeletalMeshAsset())
+    {
+        return Weapon->GetSocketLocation(WeaponTipSocketName);
+    }
+    // 小兵等没有独立武器模型的单位，从角色 Mesh 的 Socket 获取
+    return GetMesh()->GetSocketLocation(WeaponTipSocketName);
 }
 
 void ARiftTrialCharacterBase::InitAbilityActorInfo()
@@ -85,9 +94,7 @@ void ARiftTrialCharacterBase::ApplayEffectToSelf(TSubclassOf<UGameplayEffect> Ga
 
 void ARiftTrialCharacterBase::InitializeDefaultAttributes() const
 {
-    ApplayEffectToSelf(DefaultPrimaryAttributes, 1.f);
-    ApplayEffectToSelf(DefaultSecondaryAttributes, 1.f);
-    ApplayEffectToSelf(DefaultVitalAttributes, 1.f);
+    ApplayEffectToSelf(DefaultAttributes, 1.f);
 }
 
 void ARiftTrialCharacterBase::AddCharacterAbilities() const
@@ -107,7 +114,7 @@ void ARiftTrialCharacterBase::Dissolve()
         StartDissolveTimeline(DynamicMatInst);
     }
     
-    if (IsValid(WeaponDissolveMaterialInstance))
+    if (IsValid(WeaponDissolveMaterialInstance) && Weapon && Weapon->GetSkeletalMeshAsset())
     {
         UMaterialInstanceDynamic* DynamicMatInst = UMaterialInstanceDynamic::Create(WeaponDissolveMaterialInstance, this);
         Weapon->SetMaterial(0, DynamicMatInst);

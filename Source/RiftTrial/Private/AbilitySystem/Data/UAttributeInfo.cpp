@@ -1,0 +1,26 @@
+// Copyright Yerik Guo
+
+
+#include "AbilitySystem/Data/UAttributeInfo.h"
+
+#include "Misc/TextFilterExpressionEvaluator.h"
+
+FRiftTrialAttributeInfo UAttributeInfo::FindAttributeInfoByTag(const FGameplayTag& AttributeTag, bool bLogNotFound) const
+{
+    // 查找 Tag
+    for (const FRiftTrialAttributeInfo& Info : AttributeInfoList)
+    {
+        if (Info.AttributeTag.MatchesTagExact(AttributeTag))
+        {
+            return Info;
+        }
+    }
+    
+    // 未找到，记录日志
+    if (bLogNotFound)
+    {
+        UE_LOG(LogTemp, Error, TEXT("AttributeInfo not found for Tag [%s] on AttributeInfo [%s]"), *AttributeTag.ToString(), *GetNameSafe(this));
+    }
+    
+    return FRiftTrialAttributeInfo();
+}

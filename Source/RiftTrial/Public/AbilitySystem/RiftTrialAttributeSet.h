@@ -1,0 +1,249 @@
+// Copyright Yerik Guo
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "AbilitySystemComponent.h"
+#include "AttributeSet.h"
+#include "RiftTrialAttributeSet.generated.h"
+
+#define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
+    GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \
+    GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
+    GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
+    GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
+
+USTRUCT()
+struct FEffectProperties
+{
+    GENERATED_BODY()
+    
+    FEffectProperties(){}
+    
+    FGameplayEffectContextHandle EffectContextHandle;
+    
+    UPROPERTY()
+    UAbilitySystemComponent* SourceASC = nullptr;
+    
+    UPROPERTY()
+    AActor* SourceAvatarActor = nullptr;
+    
+    UPROPERTY()
+    AController* SourceController = nullptr;
+    
+    UPROPERTY()
+    ACharacter* SourceCharacter = nullptr;
+    
+    UPROPERTY()
+    UAbilitySystemComponent* TargetASC = nullptr;
+    
+    UPROPERTY()
+    AActor* TargetAvatarActor = nullptr;
+    
+    UPROPERTY()
+    AController* TargetController = nullptr;
+    
+    UPROPERTY()
+    ACharacter* TargetCharacter = nullptr;
+};
+
+//提取出一个与虚幻引擎委托系统兼容的“静态函数指针”类型
+template<class T>
+using TStaticFuncPtr = typename TBaseStaticDelegateInstance<T, FDefaultDelegateUserPolicy>::FFuncPtr;
+
+
+/**
+ * 
+ */
+UCLASS()
+class RIFTTRIAL_API URiftTrialAttributeSet : public UAttributeSet
+{
+    GENERATED_BODY()
+    
+public:
+    URiftTrialAttributeSet();    
+    virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+    
+    virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+    
+    virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
+    
+    
+    TMap<FGameplayTag, TStaticFuncPtr<FGameplayAttribute()>> TagsToAttributeMap;
+    
+    /*
+    * Primary Attributes
+    */
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Strength, Category = "Primary Attributes")
+    FGameplayAttributeData Strength;
+    ATTRIBUTE_ACCESSORS(URiftTrialAttributeSet, Strength);
+    
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Intelligence, Category = "Primary Attributes")
+    FGameplayAttributeData Intelligence;
+    ATTRIBUTE_ACCESSORS(URiftTrialAttributeSet, Intelligence);
+    
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Resilience, Category = "Primary Attributes")
+    FGameplayAttributeData Resilience;
+    ATTRIBUTE_ACCESSORS(URiftTrialAttributeSet, Resilience);
+    
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Vigor, Category = "Primary Attributes")
+    FGameplayAttributeData Vigor;
+    ATTRIBUTE_ACCESSORS(URiftTrialAttributeSet, Vigor);
+    
+    /*
+ * Secondary Attributes
+ */
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Armor, Category = "Secondary Attributes")
+    FGameplayAttributeData Armor;
+    ATTRIBUTE_ACCESSORS(URiftTrialAttributeSet, Armor);
+    
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ArmorPenetration, Category = "Secondary Attributes")
+    FGameplayAttributeData ArmorPenetration;
+    ATTRIBUTE_ACCESSORS(URiftTrialAttributeSet, ArmorPenetration);
+
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ResistanceFire, Category = "Secondary Attributes")
+    FGameplayAttributeData ResistanceFire;
+    ATTRIBUTE_ACCESSORS(URiftTrialAttributeSet, ResistanceFire);
+
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ResistanceLightning, Category = "Secondary Attributes")
+    FGameplayAttributeData ResistanceLightning;
+    ATTRIBUTE_ACCESSORS(URiftTrialAttributeSet, ResistanceLightning);
+
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ResistanceArcane, Category = "Secondary Attributes")
+    FGameplayAttributeData ResistanceArcane;
+    ATTRIBUTE_ACCESSORS(URiftTrialAttributeSet, ResistanceArcane);
+
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ResistancePhysical, Category = "Secondary Attributes")
+    FGameplayAttributeData ResistancePhysical;
+    ATTRIBUTE_ACCESSORS(URiftTrialAttributeSet, ResistancePhysical);
+    
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_BlockChance, Category = "Secondary Attributes")
+    FGameplayAttributeData BlockChance;
+    ATTRIBUTE_ACCESSORS(URiftTrialAttributeSet, BlockChance);
+    
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitChance, Category = "Secondary Attributes")
+    FGameplayAttributeData CriticalHitChance;
+    ATTRIBUTE_ACCESSORS(URiftTrialAttributeSet, CriticalHitChance);
+    
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitDamage, Category = "Secondary Attributes")
+    FGameplayAttributeData CriticalHitDamage;
+    ATTRIBUTE_ACCESSORS(URiftTrialAttributeSet, CriticalHitDamage);
+    
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitResistance, Category = "Secondary Attributes")
+    FGameplayAttributeData CriticalHitResistance;
+    ATTRIBUTE_ACCESSORS(URiftTrialAttributeSet, CriticalHitResistance);
+    
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_HealthRegeneration, Category = "Secondary Attributes")
+    FGameplayAttributeData HealthRegeneration;
+    ATTRIBUTE_ACCESSORS(URiftTrialAttributeSet, HealthRegeneration);
+    
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ManaRegeneration, Category = "Secondary Attributes")
+    FGameplayAttributeData ManaRegeneration;
+    ATTRIBUTE_ACCESSORS(URiftTrialAttributeSet, ManaRegeneration);
+
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_AttackSpeed, Category = "Secondary Attributes")
+    FGameplayAttributeData AttackSpeed;
+    ATTRIBUTE_ACCESSORS(URiftTrialAttributeSet, AttackSpeed);
+
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHealth, Category = "Vital Attributes")
+    FGameplayAttributeData MaxHealth;
+    ATTRIBUTE_ACCESSORS(URiftTrialAttributeSet, MaxHealth);
+    
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxMana, Category = "Vital Attributes")
+    FGameplayAttributeData MaxMana;
+    ATTRIBUTE_ACCESSORS(URiftTrialAttributeSet, MaxMana);
+    /*
+     * Vital Attributes
+     */
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Vital Attributes")
+    FGameplayAttributeData Health;
+    ATTRIBUTE_ACCESSORS(URiftTrialAttributeSet, Health);
+    
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Mana, Category = "Vital Attributes")
+    FGameplayAttributeData Mana;
+    ATTRIBUTE_ACCESSORS(URiftTrialAttributeSet, Mana);
+    
+    /*
+    * Meta Attributes
+    */
+    
+    UPROPERTY(BlueprintReadOnly, Category = "Meta Attributes")
+    FGameplayAttributeData IncomingDamage;
+    ATTRIBUTE_ACCESSORS(URiftTrialAttributeSet, IncomingDamage);
+    
+    
+    //Primary Attribute
+    UFUNCTION()
+    void OnRep_Strength(const FGameplayAttributeData& OldStrength) const;
+
+    UFUNCTION()
+    void OnRep_Intelligence(const FGameplayAttributeData& OldIntelligence) const;
+    
+    UFUNCTION()
+    void OnRep_Resilience(const FGameplayAttributeData& OldResilience) const;
+    
+    UFUNCTION()
+    void OnRep_Vigor(const FGameplayAttributeData& OldVigor) const;
+
+        
+    // Secondary Attribute RepNotify 函数声明
+    UFUNCTION()
+    void OnRep_Armor(const FGameplayAttributeData& OldArmor) const;
+
+    UFUNCTION()
+    void OnRep_ArmorPenetration(const FGameplayAttributeData& OldArmorPenetration) const;
+
+    UFUNCTION()
+    void OnRep_ResistanceFire(const FGameplayAttributeData& OldResistanceFire) const;
+
+    UFUNCTION()
+    void OnRep_ResistanceLightning(const FGameplayAttributeData& OldResistanceLightning) const;
+
+    UFUNCTION()
+    void OnRep_ResistanceArcane(const FGameplayAttributeData& OldResistanceArcane) const;
+
+    UFUNCTION()
+    void OnRep_ResistancePhysical(const FGameplayAttributeData& OldResistancePhysical) const;
+    
+    UFUNCTION()
+    void OnRep_BlockChance(const FGameplayAttributeData& OldBlockChance) const;
+    
+    UFUNCTION()
+    void OnRep_CriticalHitChance(const FGameplayAttributeData& OldCriticalHitChance) const;
+    
+    UFUNCTION()
+    void OnRep_CriticalHitDamage(const FGameplayAttributeData& OldCriticalHitDamage) const;
+    
+    UFUNCTION()
+    void OnRep_CriticalHitResistance(const FGameplayAttributeData& OldCriticalHitResistance) const;
+    
+    UFUNCTION()
+    void OnRep_HealthRegeneration(const FGameplayAttributeData& OldHealthRegeneration) const;
+    
+    UFUNCTION()
+    void OnRep_ManaRegeneration(const FGameplayAttributeData& OldManaRegeneration) const;
+
+    UFUNCTION()
+    void OnRep_AttackSpeed(const FGameplayAttributeData& OldAttackSpeed) const;
+
+    UFUNCTION()
+    void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const;
+    
+    UFUNCTION()
+    void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const;
+    
+    //Vital Attribute
+    UFUNCTION()
+    void OnRep_Health(const FGameplayAttributeData& OldHealth) const;
+    
+    UFUNCTION()
+    void OnRep_Mana(const FGameplayAttributeData& OldMana) const;
+
+    
+private:
+    
+    void SetAffectProperties(const struct FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const;
+    void ShowFloatingText(FEffectProperties& Props, float Damage, bool bBlockedHit, bool bCriticalHit) const;
+    
+    //UGameplayEffectExecutionCalculation
+};

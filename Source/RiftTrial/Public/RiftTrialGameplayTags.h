@@ -63,6 +63,10 @@ public:
     FGameplayTag InputTag_S;
     FGameplayTag InputTag_D;
     FGameplayTag InputTag_F;
+    FGameplayTag InputTag_Up;
+    FGameplayTag InputTag_Down;
+    FGameplayTag InputTag_Left;
+    FGameplayTag InputTag_Right;
 
     // ===== Damage =====
     FGameplayTag Damage;

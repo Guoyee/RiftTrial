@@ -178,6 +178,22 @@ void FRiftTrialGameplayTags::InitializeNativeGameplayTags()
         FName("InputTag.F"),
         FString("Key F")
     );
+    SingletonGameplayTags.InputTag_Up = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("InputTag.Up"),
+        FString("Arrow Up")
+    );
+    SingletonGameplayTags.InputTag_Down = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("InputTag.Down"),
+        FString("Arrow Down")
+    );
+    SingletonGameplayTags.InputTag_Left = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("InputTag.Left"),
+        FString("Arrow Left")
+    );
+    SingletonGameplayTags.InputTag_Right = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("InputTag.Right"),
+        FString("Arrow Right")
+    );
 
     /*
      * Damage Types

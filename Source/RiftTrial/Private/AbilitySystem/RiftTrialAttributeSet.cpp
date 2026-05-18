@@ -12,6 +12,8 @@
 
 URiftTrialAttributeSet::URiftTrialAttributeSet()
 {
+    InitMoveSpeed(600.f);
+
     const FRiftTrialGameplayTags& GameplayTags = FRiftTrialGameplayTags::Get();
 
     // Vital

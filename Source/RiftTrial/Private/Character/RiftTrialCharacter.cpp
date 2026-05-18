@@ -5,7 +5,10 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/RiftTrialAbilitySystemComponent.h"
+#include "AbilitySystem/RiftTrialAttributeSet.h"
+#include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Player/RiftTrialPlayerController.h"
 #include "Player/RiftTrialPlayerState.h"
 #include "UI/HUD/RiftTrialHUD.h"
@@ -16,14 +19,24 @@ ARiftTrialCharacter::ARiftTrialCharacter()
     GetCharacterMovement()->RotationRate = FRotator(0.0f, 800.0f, 0.0f);
     GetCharacterMovement()->bConstrainToPlane = true;
     GetCharacterMovement()->bSnapToPlaneAtStart = true;
-    
-    // 专用服务器上也更新动画姿态，保证技能弹体生成位置正确
+
     GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
 
-    //角色不跟随摄像机旋转
     bUseControllerRotationPitch = false;
     bUseControllerRotationRoll = false;
     bUseControllerRotationYaw = false;
+
+    CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+    CameraBoom->SetupAttachment(RootComponent);
+    CameraBoom->TargetArmLength = CameraArmLength;
+    CameraBoom->SetRelativeRotation(CameraRotation);
+    CameraBoom->bDoCollisionTest = false;
+    CameraBoom->bInheritPitch = false;
+    CameraBoom->bInheritRoll = false;
+    CameraBoom->bInheritYaw = false;
+
+    FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+    FollowCamera->SetupAttachment(CameraBoom);
 }
 
 void ARiftTrialCharacter::PossessedBy(AController* NewController)
@@ -67,5 +80,16 @@ void ARiftTrialCharacter::InitAbilityActorInfo()
     }
     
     InitializeDefaultAttributes();
-    
+
+    // 将 MoveSpeed 属性同步到角色移动速度
+    if (URiftTrialAttributeSet* AS = Cast<URiftTrialAttributeSet>(AttributeSet))
+    {
+        GetCharacterMovement()->MaxWalkSpeed = AS->GetMoveSpeed();
+
+        AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AS->GetMoveSpeedAttribute()).AddLambda(
+            [this](const FOnAttributeChangeData& Data)
+            {
+                GetCharacterMovement()->MaxWalkSpeed = Data.NewValue;
+            });
+    }
 }

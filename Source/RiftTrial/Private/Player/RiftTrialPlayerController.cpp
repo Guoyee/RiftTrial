@@ -20,7 +20,7 @@
 ARiftTrialPlayerController::ARiftTrialPlayerController()
 {
     bReplicates = true;
-    
+
     Spline = CreateDefaultSubobject<USplineComponent>("Spline");
 }
 
@@ -178,12 +178,17 @@ URiftTrialAbilitySystemComponent* ARiftTrialPlayerController::GetASC()
 void ARiftTrialPlayerController::BeginPlay()
 {
     Super::BeginPlay();
-    check(RTContext);
-    
-    UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-    if (Subsystem)
+
+    if (RTContext)
     {
-    Subsystem->AddMappingContext(RTContext, 0);
+        if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+        {
+            Subsystem->AddMappingContext(RTContext, 0);
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("BP_PlayerController: RTContext (Input Mapping Context) is null, input will not work"));
     }
     
     bShowMouseCursor = true;
@@ -198,30 +203,34 @@ void ARiftTrialPlayerController::BeginPlay()
 void ARiftTrialPlayerController::SetupInputComponent()
 {
     Super::SetupInputComponent();
-    
-    URiftTrialInputComponent* RiftTrialInputComponent = CastChecked<URiftTrialInputComponent>(InputComponent);
-    
-    RiftTrialInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ARiftTrialPlayerController::Move);
-    
-    //调用RiftTrialInputComponent中定义的模板函数来完成BindAction
-    RiftTrialInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
+
+    UEnhancedInputComponent* EnhancedInput = CastChecked<UEnhancedInputComponent>(InputComponent);
+
+    EnhancedInput->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ARiftTrialPlayerController::Move);
+
+    URiftTrialInputComponent::BindAbilityActions(InputConfig, EnhancedInput, this,
+        &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
 }
 
 void ARiftTrialPlayerController::Move(const FInputActionValue& InputActionValue)
 {
     const FVector2D InputAxisVector = InputActionValue.Get<FVector2D>();
+
+    APawn* ControlledPawn = GetPawn<APawn>();
+    if (!ControlledPawn)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Move: no Pawn possessed"));
+        return;
+    }
+
     const FRotator Rotation = GetControlRotation();
     const FRotator YawRotation(0.f, Rotation.Yaw, 0.f);
-    
+
     const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
     const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-    
-    if (APawn* ControlledPawn = GetPawn<APawn>())
-    {
-        ControlledPawn->AddMovementInput(ForwardDirection, InputAxisVector.Y);
-        ControlledPawn->AddMovementInput(RightDirection, InputAxisVector.X);
-    }
-    
+
+    ControlledPawn->AddMovementInput(ForwardDirection, InputAxisVector.Y);
+    ControlledPawn->AddMovementInput(RightDirection, InputAxisVector.X);
 }
 
 

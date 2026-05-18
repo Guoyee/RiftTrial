@@ -27,7 +27,7 @@ void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 void UAttributeMenuWidgetController::BroadcastInitialValues()
 {
     URiftTrialAttributeSet* AS = CastChecked<URiftTrialAttributeSet>(AttributeSet);
-    check(AttributeInfo);
+    if (!AttributeInfo) return;
     for (auto& Pair : AS->TagsToAttributeMap)
     {
         BroadcastAttributeInfo(Pair.Key, Pair.Value());

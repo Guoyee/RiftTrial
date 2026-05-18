@@ -10,6 +10,6 @@ void ARiftTrialGameModeBase::BeginPlay()
     {
         World->GetWorldSettings()->SetTimeDilation(1.0f);
     }
-    
-    check(RiftTrialCharacterClassInfo);
+    // TODO: 等需要按职业查表时再配 DA_CharacterClassInfo
+    // check(RiftTrialCharacterClassInfo);
 }

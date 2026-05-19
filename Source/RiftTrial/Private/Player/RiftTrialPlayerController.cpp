@@ -14,7 +14,9 @@
 #include "Components/SplineComponent.h"
 #include "GameFramework/Character.h"
 #include "Input/RiftTrialInputComponent.h"
+#include "Interaction/CombatInterface.h"
 #include "Interaction/EnemyInterface.h"
+#include "RiftTrial.h"
 #include "UI/Widgets/DamageTextComponent.h"
 
 ARiftTrialPlayerController::ARiftTrialPlayerController()
@@ -67,14 +69,24 @@ void ARiftTrialPlayerController::CursorTrace()
 {
     GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
     if (!CursorHit.bBlockingHit) return;
-    
+
     LastActor = ThisActor;
     ThisActor = Cast<IEnemyInterface>(CursorHit.GetActor());
-    
-    if (LastActor!=ThisActor)
+
+    if (LastActor != ThisActor)
     {
         if (LastActor) LastActor->UnHighlightActor();
-        if (ThisActor) ThisActor->HighlightActor();
+        if (ThisActor)
+        {
+            int32 StencilValue = CUSTOM_DEPTH_RED;
+            if (const ICombatInterface* HitCombat = Cast<ICombatInterface>(CursorHit.GetActor()))
+            {
+                APawn* MyPawn = GetPawn();
+                const int32 MyTeam = MyPawn ? Cast<ICombatInterface>(MyPawn)->GetTeamID() : 0;
+                StencilValue = (HitCombat->GetTeamID() == MyTeam && MyTeam != 0) ? CUSTOM_DEPTH_BLUE : CUSTOM_DEPTH_RED;
+            }
+            ThisActor->HighlightActor(StencilValue);
+        }
     }
 }
 

@@ -68,6 +68,11 @@ void ARiftTrialCharacterBase::BeginPlay()
     
 }
 
+int32 ARiftTrialCharacterBase::GetTeamID() const
+{
+    return TeamID;
+}
+
 FVector ARiftTrialCharacterBase::GetCombatSocketLocation()
 {
     if (Weapon && Weapon->GetSkeletalMeshAsset())

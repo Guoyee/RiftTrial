@@ -25,9 +25,13 @@ public:
     
     virtual UAnimMontage* GetHitReactMontage_Implementation() override;
     
-    /* Combat Interface*/
+    /* Combat Interface */
     virtual void Die() override;
-    /* end Combat Interface*/
+    virtual int32 GetTeamID() const override;
+    /* end Combat Interface */
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
+    int32 TeamID = 0;
     
     UFUNCTION(NetMulticast, Reliable)
     virtual void MulticastHandleDeath();

@@ -6,3 +6,4 @@
 
 #define ECC_Projectile ECollisionChannel::ECC_GameTraceChannel1
 #define CUSTOM_DEPTH_RED 250
+#define CUSTOM_DEPTH_BLUE 251

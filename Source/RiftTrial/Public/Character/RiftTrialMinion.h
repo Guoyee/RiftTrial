@@ -16,7 +16,7 @@ public:
     ARiftTrialMinion();
 
     // EnemyInterface
-    virtual void HighlightActor() override;
+    virtual void HighlightActor(int32 StencilValue) override;
     virtual void UnHighlightActor() override;
     // end EnemyInterface
 

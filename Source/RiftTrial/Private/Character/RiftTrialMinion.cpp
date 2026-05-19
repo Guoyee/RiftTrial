@@ -3,10 +3,13 @@
 #include "Character/RiftTrialMinion.h"
 #include "AbilitySystem/RiftTrialAbilitySystemComponent.h"
 #include "AbilitySystem/RiftTrialAttributeSet.h"
+#include "Components/CapsuleComponent.h"
 #include "RiftTrial.h"
 
 ARiftTrialMinion::ARiftTrialMinion()
 {
+    GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+
     AbilitySystemComponent = CreateDefaultSubobject<URiftTrialAbilitySystemComponent>("AbilitySystemComponent");
     AbilitySystemComponent->SetIsReplicated(true);
     AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
@@ -28,10 +31,10 @@ void ARiftTrialMinion::InitAbilityActorInfo()
     Cast<URiftTrialAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 }
 
-void ARiftTrialMinion::HighlightActor()
+void ARiftTrialMinion::HighlightActor(int32 StencilValue)
 {
     GetMesh()->SetRenderCustomDepth(true);
-    GetMesh()->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
+    GetMesh()->SetCustomDepthStencilValue(StencilValue);
 }
 
 void ARiftTrialMinion::UnHighlightActor()

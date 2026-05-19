@@ -6,22 +6,24 @@
 #include "AIController.h"
 #include "RiftTrialAIController.generated.h"
 
+class UBehaviorTree;
 class UBehaviorTreeComponent;
-/**
- * 
- */
+
 UCLASS()
 class RIFTTRIAL_API ARiftTrialAIController : public AAIController
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+
 public:
-    
     ARiftTrialAIController();
-    
+
 protected:
-    
+    virtual void OnPossess(APawn* InPawn) override;
+
+    UPROPERTY(EditAnywhere, Category = "AI")
+    TObjectPtr<UBehaviorTree> BehaviorTree;
+
     TObjectPtr<UBlackboardComponent> BlackboardComponent;
-    
+
     TObjectPtr<UBehaviorTreeComponent> BehaviorTreeComponent;
 };

@@ -7,6 +7,9 @@
 #include "AbilitySystem/RiftTrialAbilitySystemComponent.h"
 #include "AbilitySystem/RiftTrialAttributeSet.h"
 #include "Actor/RangedProjectile.h"
+#include "AIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "GameFramework/Pawn.h"
 #include "RiftTrialGameplayTags.h"
 #include "Interaction/CombatInterface.h"
 
@@ -52,6 +55,22 @@ AActor* URangedAttackAbility::GetAttackTarget(const FGameplayEventData* TriggerE
     {
         return const_cast<AActor*>(TriggerEventData->Target.Get());
     }
+
+    // AI 控制的单位从黑板读取攻击目标
+    if (AActor* Avatar = GetAvatarActorFromActorInfo())
+    {
+        if (APawn* Pawn = Cast<APawn>(Avatar))
+        {
+            if (AAIController* AIC = Cast<AAIController>(Pawn->GetController()))
+            {
+                if (UBlackboardComponent* BB = AIC->GetBlackboardComponent())
+                {
+                    return Cast<AActor>(BB->GetValueAsObject("TargetToFollow"));
+                }
+            }
+        }
+    }
+
     return nullptr;
 }
 

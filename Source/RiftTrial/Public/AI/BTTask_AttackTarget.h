@@ -22,6 +22,9 @@ public:
     UPROPERTY(EditAnywhere, Category = "Blackboard")
     FBlackboardKeySelector TargetKey;
 
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector AttackRangeKey;
+
     UPROPERTY(EditAnywhere, Category = "Config")
     float AttackRange = 400.f;
 

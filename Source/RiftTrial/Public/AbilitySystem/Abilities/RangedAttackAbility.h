@@ -7,9 +7,8 @@
 #include "RangedAttackAbility.generated.h"
 
 class ARangedProjectile;
-class ICombatInterface;
 
-UCLASS()
+UCLASS(Blueprintable)
 class RIFTTRIAL_API URangedAttackAbility : public URiftTrialDamageGameplayAbility
 {
     GENERATED_BODY()
@@ -17,20 +16,14 @@ class RIFTTRIAL_API URangedAttackAbility : public URiftTrialDamageGameplayAbilit
 public:
     URangedAttackAbility();
 
-    virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
-        const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
-
     virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
         const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags,
         FGameplayTagContainer* OptionalRelevantTags) const override;
 
-    virtual bool ShouldAbilityRespondToEvent(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayEventData* Payload) const override { return true; }
+    UFUNCTION(BlueprintCallable, Category = "Attack")
+    AActor* GetAttackTarget();
 
 protected:
-    // 子类/蓝图可覆写：获取攻击目标（默认从 TriggerEventData 中读取）
-    virtual AActor* GetAttackTarget(const FGameplayEventData* TriggerEventData);
-
-    // 子类可覆写：获取弹体生成位置
     virtual FVector GetSpawnLocation();
 
     UFUNCTION(BlueprintCallable)
@@ -53,9 +46,6 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cooldown")
     TSubclassOf<UGameplayEffect> AttackCooldownEffectClass;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-    float BaseAttackInterval = 1.0f;
 
     void ApplyAttackCooldown() const;
 

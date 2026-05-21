@@ -1,10 +1,8 @@
 // Copyright Yerik Guo
 
 #include "AbilitySystem/Abilities/RangedAttackAbility.h"
-
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
-#include "AbilitySystem/RiftTrialAbilitySystemComponent.h"
 #include "AbilitySystem/RiftTrialAttributeSet.h"
 #include "Actor/RangedProjectile.h"
 #include "AIController.h"
@@ -31,32 +29,8 @@ bool URangedAttackAbility::CanActivateAbility(const FGameplayAbilitySpecHandle H
     return true;
 }
 
-void URangedAttackAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
-    const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
+AActor* URangedAttackAbility::GetAttackTarget()
 {
-    Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
-    AActor* Target = GetAttackTarget(TriggerEventData);
-    if (!Target)
-    {
-        EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
-        return;
-    }
-
-    BuildAndSpawnProjectile(Target);
-    ApplyAttackCooldown();
-
-    EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
-}
-
-AActor* URangedAttackAbility::GetAttackTarget(const FGameplayEventData* TriggerEventData)
-{
-    if (TriggerEventData && TriggerEventData->Target)
-    {
-        return const_cast<AActor*>(TriggerEventData->Target.Get());
-    }
-
-    // AI 控制的单位从黑板读取攻击目标
     if (AActor* Avatar = GetAvatarActorFromActorInfo())
     {
         if (APawn* Pawn = Cast<APawn>(Avatar))
@@ -100,7 +74,7 @@ void URangedAttackAbility::ApplyAttackCooldown() const
         AttackSpeed = FMath::Max(AttackSpeed, 0.01f);
     }
 
-    const float CooldownDuration = BaseAttackInterval / AttackSpeed;
+    const float CooldownDuration = 1.0f / AttackSpeed;
 
     ASC->AddLooseGameplayTag(FRiftTrialGameplayTags::Get().Cooldown_Attack);
 

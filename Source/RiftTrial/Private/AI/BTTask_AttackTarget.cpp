@@ -3,6 +3,7 @@
 #include "AI/BTTask_AttackTarget.h"
 #include "AIController.h"
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/RiftTrialAttributeSet.h"
 #include "AbilitySystemInterface.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/Pawn.h"
@@ -14,6 +15,19 @@ UBTTask_AttackTarget::UBTTask_AttackTarget()
 
     TargetKey.AddObjectFilter(this, GET_MEMBER_NAME_CHECKED(UBTTask_AttackTarget, TargetKey), AActor::StaticClass());
     TargetKey.SelectedKeyName = "TargetToFollow";
+    AttackRangeKey.AddFloatFilter(this, GET_MEMBER_NAME_CHECKED(UBTTask_AttackTarget, AttackRangeKey));
+    AttackRangeKey.SelectedKeyName = "AttackRange";
+}
+
+float GetAttackRange(UBehaviorTreeComponent& OwnerComp, const FBlackboardKeySelector& Key, float DefaultValue)
+{
+    if (Key.SelectedKeyName.IsNone()) return DefaultValue;
+
+    const UBlackboardComponent* BB = OwnerComp.GetBlackboardComponent();
+    if (!BB) return DefaultValue;
+
+    const float Value = BB->GetValueAsFloat(Key.SelectedKeyName);
+    return Value > 0.f ? Value : DefaultValue;
 }
 
 EBTNodeResult::Type UBTTask_AttackTarget::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -49,11 +63,28 @@ void UBTTask_AttackTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
         return;
     }
 
+    // 从 GAS 属性读取攻击范围，回退到黑板，最后用配置默认值
+    float EffectiveRange = AttackRange;
+    if (const IAbilitySystemInterface* ASCI = Cast<IAbilitySystemInterface>(Pawn))
+    {
+        if (const UAbilitySystemComponent* ASC = ASCI->GetAbilitySystemComponent())
+        {
+            if (const URiftTrialAttributeSet* AS = Cast<URiftTrialAttributeSet>(ASC->GetAttributeSet(URiftTrialAttributeSet::StaticClass())))
+            {
+                EffectiveRange = AS->GetAttackRange();
+            }
+        }
+    }
+    if (EffectiveRange <= 0.f)
+    {
+        EffectiveRange = GetAttackRange(OwnerComp, AttackRangeKey, AttackRange);
+    }
+
     const float Dist = FVector::Dist(Pawn->GetActorLocation(), Target->GetActorLocation());
 
-    if (Dist > AttackRange)
+    if (Dist > EffectiveRange)
     {
-        AIController->MoveToActor(Target, AttackRange * 0.8f);
+        AIController->MoveToActor(Target, EffectiveRange * 0.8f);
     }
     else
     {

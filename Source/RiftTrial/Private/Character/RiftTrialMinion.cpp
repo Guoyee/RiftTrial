@@ -4,6 +4,7 @@
 #include "AbilitySystem/RiftTrialAbilitySystemComponent.h"
 #include "AbilitySystem/RiftTrialAttributeSet.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "RiftTrial.h"
 
 ARiftTrialMinion::ARiftTrialMinion()
@@ -29,6 +30,18 @@ void ARiftTrialMinion::InitAbilityActorInfo()
 {
     AbilitySystemComponent->InitAbilityActorInfo(this, this);
     Cast<URiftTrialAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
+
+    // 将 MoveSpeed 属性同步到角色移动速度
+    if (URiftTrialAttributeSet* AS = Cast<URiftTrialAttributeSet>(AttributeSet))
+    {
+        GetCharacterMovement()->MaxWalkSpeed = AS->GetMoveSpeed();
+
+        AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AS->GetMoveSpeedAttribute()).AddLambda(
+            [this](const FOnAttributeChangeData& Data)
+            {
+                GetCharacterMovement()->MaxWalkSpeed = Data.NewValue;
+            });
+    }
 }
 
 void ARiftTrialMinion::HighlightActor(int32 StencilValue)

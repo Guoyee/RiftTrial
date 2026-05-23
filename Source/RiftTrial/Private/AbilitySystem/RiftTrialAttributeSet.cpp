@@ -128,12 +128,6 @@ void URiftTrialAttributeSet::PostGameplayEffectExecute(const struct FGameplayEff
                     CombatInterface->Die();
                 }
             }
-            else
-            {
-                FGameplayTagContainer TagContainer;
-                TagContainer.AddTag(FRiftTrialGameplayTags::Get().Effects_HitReact);
-                Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
-            }
 
             const bool bBlock = URiftTrialAbilitySystemLibrary::IsBlockedHit(Props.EffectContextHandle);
             const bool bCritical = URiftTrialAbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle);

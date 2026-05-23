@@ -15,5 +15,4 @@ void URiftTrialAssetManager::StartInitialLoading()
 {
     Super::StartInitialLoading();
     FRiftTrialGameplayTags::InitializeNativeGameplayTags();
-    
 }

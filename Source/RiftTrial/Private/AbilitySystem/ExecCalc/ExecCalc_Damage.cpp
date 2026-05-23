@@ -149,9 +149,23 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
     Damage = bCriticalHit ? Damage * 1.5f : Damage;
 
     FGameplayEffectContextHandle EffectContextHandle = Spec.GetContext();
-    FRiftTrialGameplayEffectContext* RiftTrialContext = static_cast<FRiftTrialGameplayEffectContext*>(EffectContextHandle.Get());
-    RiftTrialContext->SetIsBlockedHit(false);
-    RiftTrialContext->SetIsCriticalHit(bCriticalHit);
+    if (FGameplayEffectContext* Context = EffectContextHandle.Get())
+    {
+        if (Context->GetScriptStruct() == FRiftTrialGameplayEffectContext::StaticStruct())
+        {
+            FRiftTrialGameplayEffectContext* RiftContext = static_cast<FRiftTrialGameplayEffectContext*>(Context);
+            RiftContext->SetIsBlockedHit(false);
+            RiftContext->SetIsCriticalHit(bCriticalHit);
+        }
+        else
+        {
+            UE_LOG(LogTemp, Error, TEXT("ExecCalc_Damage: Context type mismatch, expected %s got %s"),
+                *FRiftTrialGameplayEffectContext::StaticStruct()->GetName(),
+                *Context->GetScriptStruct()->GetName());
+        }
+    }
+
+
 
     Damage = FMath::Max(Damage, 0.f);
 

@@ -77,6 +77,7 @@ public:
 
     // ===== Effects =====
     FGameplayTag Effects_HitReact;
+    FGameplayTag State_Dead;
 
     // ===== Abilities =====
     FGameplayTag Ability_Attack_Ranged;

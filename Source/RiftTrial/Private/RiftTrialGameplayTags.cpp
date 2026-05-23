@@ -229,6 +229,10 @@ void FRiftTrialGameplayTags::InitializeNativeGameplayTags()
         FName("Effects.HitReact"),
         FString("HitReact")
     );
+    SingletonGameplayTags.State_Dead = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("State.Dead"),
+        FString("Actor is dead")
+    );
 
     /*
      * Ability Tags

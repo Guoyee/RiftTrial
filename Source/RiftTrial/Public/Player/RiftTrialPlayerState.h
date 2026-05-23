@@ -27,6 +27,12 @@ public:
     void AddSkillPoint() { ++AvailableSkillPoints; }
     void SpendSkillPoint() { if (AvailableSkillPoints > 0) --AvailableSkillPoints; }
 
+    // 启动复活倒计时
+    void StartRespawnTimer();
+
+    UPROPERTY(EditDefaultsOnly, Category = "Respawn")
+    float RespawnDelay = 10.f;
+
 protected:
     UPROPERTY(VisibleAnywhere)
     TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
@@ -46,5 +52,8 @@ private:
 
     UFUNCTION()
     void OnRep_AvailableSkillPoints(int32 OldValue);
-    
+
+    void RespawnPawn();
+
+    FTimerHandle RespawnTimer;
 };

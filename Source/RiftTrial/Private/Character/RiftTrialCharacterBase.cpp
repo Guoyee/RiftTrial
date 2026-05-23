@@ -5,8 +5,13 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/RiftTrialAbilitySystemComponent.h"
-#include "RiftTrial.h"
+#include "Animation/AnimInstance.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Player/RiftTrialPlayerState.h"
+#include "RiftTrial.h"
+#include "RiftTrialGameplayTags.h"
+#include "TimerManager.h"
 
 // Sets default values
 ARiftTrialCharacterBase::ARiftTrialCharacterBase()
@@ -29,37 +34,49 @@ UAbilitySystemComponent* ARiftTrialCharacterBase::GetAbilitySystemComponent() co
     return AbilitySystemComponent;
 }
 
-UAnimMontage* ARiftTrialCharacterBase::GetHitReactMontage_Implementation()
-{
-    return HitReactMontage;
-}
-
 void ARiftTrialCharacterBase::Die()
 {
-    if (Weapon && Weapon->GetSkeletalMeshAsset())
+    // 添加死亡标签，防止被 AI 继续索敌
+    if (AbilitySystemComponent)
     {
-        Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, false));
+        AbilitySystemComponent->AddLooseGameplayTag(FRiftTrialGameplayTags::Get().State_Dead);
     }
-    MulticastHandleDeath();
+
+    // 停止移动、禁用碰撞
+    GetCharacterMovement()->DisableMovement();
+    GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    // 英雄走 PlayerState 复活，小兵直接销毁
+    if (ARiftTrialPlayerState* PS = GetPlayerState<ARiftTrialPlayerState>())
+    {
+        PS->StartRespawnTimer();
+    }
+    else
+    {
+        SetLifeSpan(DeathDestroyDelay);
+    }
+
+    // 通过 Multicast 在所有客户端播放死亡动画
+    MulticastPlayDeathMontage();
 }
 
-void ARiftTrialCharacterBase::MulticastHandleDeath_Implementation()
+void ARiftTrialCharacterBase::MulticastPlayDeathMontage_Implementation()
 {
-    if (Weapon && Weapon->GetSkeletalMeshAsset())
+    if (DeathMontage && GetMesh() && GetMesh()->GetAnimInstance())
     {
-        Weapon->SetSimulatePhysics(true);
-        Weapon->SetEnableGravity(true);
-        Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+        DeathMontage->bEnableAutoBlendOut = false;
+        GetMesh()->GetAnimInstance()->Montage_Play(DeathMontage);
+
+        // 死亡动画播完后暂停在最后一帧
+        FTimerHandle PauseTimerHandle;
+        GetWorld()->GetTimerManager().SetTimer(PauseTimerHandle, [Mesh = GetMesh(), Montage = DeathMontage]()
+        {
+            if (Mesh && Mesh->GetAnimInstance())
+            {
+                Mesh->GetAnimInstance()->Montage_Pause(Montage);
+            }
+        }, DeathMontage->GetPlayLength(), false);
     }
-
-    GetMesh()->SetSimulatePhysics(true);
-    GetMesh()->SetEnableGravity(true);
-    GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-    GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
-
-    GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    OnDeath();
-    Dissolve();
 }
 
 void ARiftTrialCharacterBase::BeginPlay()
@@ -109,24 +126,4 @@ void ARiftTrialCharacterBase::AddCharacterAbilities() const
     AuraASC->AddCharacterAbilities(StartupAbilities);
     
 }
-
-void ARiftTrialCharacterBase::Dissolve()
-{
-    if (IsValid(DissolveMaterialInstance))
-    {
-        UMaterialInstanceDynamic* DynamicMatInst = UMaterialInstanceDynamic::Create(DissolveMaterialInstance, this);
-        GetMesh()->SetMaterial(0, DynamicMatInst);
-        StartDissolveTimeline(DynamicMatInst);
-    }
-    
-    if (IsValid(WeaponDissolveMaterialInstance) && Weapon && Weapon->GetSkeletalMeshAsset())
-    {
-        UMaterialInstanceDynamic* DynamicMatInst = UMaterialInstanceDynamic::Create(WeaponDissolveMaterialInstance, this);
-        Weapon->SetMaterial(0, DynamicMatInst);
-        StartWeaponDissolveTimeline(DynamicMatInst);
-    }
-}
-
-
-
 

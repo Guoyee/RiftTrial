@@ -23,8 +23,6 @@ public:
     virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
     UAttributeSet* GetAttributeSet() const {return AttributeSet;}
     
-    virtual UAnimMontage* GetHitReactMontage_Implementation() override;
-    
     /* Combat Interface */
     virtual void Die() override;
     virtual int32 GetTeamID() const override;
@@ -32,59 +30,45 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
     int32 TeamID = 0;
-    
-    UFUNCTION(NetMulticast, Reliable)
-    virtual void MulticastHandleDeath();
 
-    virtual void OnDeath() {}
-protected:
+    // 死亡动画 Montage
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
+    TObjectPtr<UAnimMontage> DeathMontage;
+
+    // 死亡后销毁延迟（秒），0 表示不自动销毁
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
+    float DeathDestroyDelay = 5.f;
+
+    UFUNCTION(NetMulticast, Reliable)
+    void MulticastPlayDeathMontage();
     virtual void BeginPlay() override;
-    
+
     UPROPERTY(EditAnywhere, Category = "Combat")
     TObjectPtr<USkeletalMeshComponent> Weapon;
-    
+
     UPROPERTY(EditAnywhere, Category = "Combat")
     FName WeaponTipSocketName;
-    
+
     virtual FVector GetCombatSocketLocation() override;
-    
+
     UPROPERTY()
     TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
-    
+
     UPROPERTY()
     TObjectPtr<UAttributeSet> AttributeSet;
-    
+
     virtual void InitAbilityActorInfo();
-    
+
     UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Attribute")
     TSubclassOf<UGameplayEffect> DefaultAttributes;
-    
+
     void ApplayEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const;
-    
+
     void InitializeDefaultAttributes() const;
-    
+
     void AddCharacterAbilities() const;
-    
-    /* Dissolve Effects */
-    
-    //将当前的材质替换为DissolveMaterialInstance
-    void Dissolve();
-    
-    UFUNCTION(BlueprintImplementableEvent)
-    void StartDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);
 
-    UFUNCTION(BlueprintImplementableEvent)
-    void StartWeaponDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);
-    
-    UPROPERTY(EditAnywhere, BlueprintReadOnly)
-    TObjectPtr<UMaterialInstance> DissolveMaterialInstance;
-
-    UPROPERTY(EditAnywhere, BlueprintReadOnly)
-    TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInstance;
 private:
     UPROPERTY(EditAnywhere, Category = "Abilities")
     TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
-    
-    UPROPERTY(EditAnywhere, Category = "Combat")
-    TObjectPtr<UAnimMontage> HitReactMontage;
 };

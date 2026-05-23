@@ -5,7 +5,9 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/RiftTrialAbilitySystemComponent.h"
+#include "AIController.h"
 #include "Animation/AnimInstance.h"
+#include "BehaviorTree/BehaviorTreeComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/RiftTrialPlayerState.h"
@@ -36,10 +38,26 @@ UAbilitySystemComponent* ARiftTrialCharacterBase::GetAbilitySystemComponent() co
 
 void ARiftTrialCharacterBase::Die()
 {
+    // 防止重复触发
+    if (AbilitySystemComponent && AbilitySystemComponent->HasMatchingGameplayTag(FRiftTrialGameplayTags::Get().State_Dead))
+    {
+        return;
+    }
+
     // 添加死亡标签，防止被 AI 继续索敌
     if (AbilitySystemComponent)
     {
         AbilitySystemComponent->AddLooseGameplayTag(FRiftTrialGameplayTags::Get().State_Dead);
+    }
+
+    // 停止 AI 行为树
+    if (AAIController* AIC = Cast<AAIController>(GetController()))
+    {
+        AIC->StopMovement();
+        if (UBehaviorTreeComponent* BTComp = AIC->FindComponentByClass<UBehaviorTreeComponent>())
+        {
+            BTComp->StopTree(EBTStopMode::Safe);
+        }
     }
 
     // 停止移动、禁用碰撞

@@ -90,7 +90,7 @@ void UBTTask_FollowSplinePath::TickTask(UBehaviorTreeComponent& OwnerComp, uint8
     const FRotator Rotation = Spline->GetRotationAtDistanceAlongSpline(NewDist, ESplineCoordinateSpace::World);
 
     Pawn->SetActorLocation(Location);
-    Pawn->SetActorRotation(Rotation);
+    Pawn->SetActorRotation(FMath::RInterpTo(Pawn->GetActorRotation(), Rotation, DeltaSeconds, 10.f));
 
     Blackboard->SetValueAsFloat(SplineDistanceKey.SelectedKeyName, NewDist);
 }

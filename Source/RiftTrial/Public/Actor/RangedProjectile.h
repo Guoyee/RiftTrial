@@ -50,6 +50,9 @@ protected:
     TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
 
     UPROPERTY(EditDefaultsOnly)
+    TObjectPtr<UNiagaraSystem> FlightEffect;
+
+    UPROPERTY(EditDefaultsOnly)
     TObjectPtr<UNiagaraSystem> ImpactEffect;
 
     UPROPERTY(EditDefaultsOnly)

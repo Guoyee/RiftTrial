@@ -30,6 +30,11 @@ void ARangedProjectile::BeginPlay()
 {
     Super::BeginPlay();
     SetLifeSpan(LifeSpan);
+
+    if (FlightEffect)
+    {
+        UNiagaraFunctionLibrary::SpawnSystemAttached(FlightEffect, Sphere, NAME_None, FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::SnapToTarget, false);
+    }
 }
 
 void ARangedProjectile::SetTarget(AActor* InTarget)

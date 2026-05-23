@@ -2,6 +2,9 @@
 .vs/
 .idea/
 
+# Claude Code local overrides
+.claude/settings.local.json
+
 # Project documentation (auto-generated)
 CLAUDE.md
 memory/

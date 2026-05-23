@@ -82,3 +82,6 @@ DerivedDataCache/*
 # Content — only Blueprints are tracked
 Content/*
 !Content/BluePrints/
+
+# User-specific files
+*.DotSettings.user

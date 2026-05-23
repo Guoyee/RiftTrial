@@ -2,10 +2,13 @@
 
 #include "AI/BTService_FindNearestEnemy.h"
 #include "AIController.h"
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemInterface.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Character/RiftTrialCharacterBase.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
+#include "RiftTrialGameplayTags.h"
 
 UBTService_FindNearestEnemy::UBTService_FindNearestEnemy()
 {
@@ -42,6 +45,32 @@ void UBTService_FindNearestEnemy::TickNode(UBehaviorTreeComponent& OwnerComp, ui
         return;
     }
 
+    // 锁定目标：如果当前目标仍有效且未脱离索敌范围，保持锁定不切换
+    AActor* CurrentTarget = Cast<AActor>(Blackboard->GetValueAsObject(TargetToFollowSelector.SelectedKeyName));
+    if (IsValid(CurrentTarget))
+    {
+        // 跳过已死亡的目标
+        const IAbilitySystemInterface* CurrentASC = Cast<IAbilitySystemInterface>(CurrentTarget);
+        if (CurrentASC && CurrentASC->GetAbilitySystemComponent())
+        {
+            if (!CurrentASC->GetAbilitySystemComponent()->HasMatchingGameplayTag(FRiftTrialGameplayTags::Get().State_Dead))
+            {
+                const ICombatInterface* CurrentCombat = Cast<ICombatInterface>(CurrentTarget);
+                if (CurrentCombat && CurrentCombat->GetTeamID() != MyTeamID)
+                {
+                    const float CurrentDist = FVector::Dist(MyPawn->GetActorLocation(), CurrentTarget->GetActorLocation());
+
+                    if (AggroRange <= 0.f || CurrentDist <= AggroRange)
+                    {
+                        // 目标仍有效，只更新距离，不换目标
+                        Blackboard->SetValueAsFloat(DistanceToTargetSelector.SelectedKeyName, CurrentDist);
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
     TArray<AActor*> AllActors;
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), ARiftTrialCharacterBase::StaticClass(), AllActors);
 
@@ -51,6 +80,13 @@ void UBTService_FindNearestEnemy::TickNode(UBehaviorTreeComponent& OwnerComp, ui
     for (AActor* Actor : AllActors)
     {
         if (Actor == MyPawn || !IsValid(Actor)) continue;
+
+        // 跳过已死亡的目标
+        const IAbilitySystemInterface* OtherASC = Cast<IAbilitySystemInterface>(Actor);
+        if (OtherASC && OtherASC->GetAbilitySystemComponent())
+        {
+            if (OtherASC->GetAbilitySystemComponent()->HasMatchingGameplayTag(FRiftTrialGameplayTags::Get().State_Dead)) continue;
+        }
 
         const ICombatInterface* OtherCombat = Cast<ICombatInterface>(Actor);
         if (!OtherCombat) continue;

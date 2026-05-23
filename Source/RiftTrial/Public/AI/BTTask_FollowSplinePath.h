@@ -25,5 +25,5 @@ public:
     FBlackboardKeySelector SplineDistanceKey;
 
     UPROPERTY(EditAnywhere, Category = "Config")
-    float Speed = 200.f;
+    float DefaultSpeed = 200.f;
 };

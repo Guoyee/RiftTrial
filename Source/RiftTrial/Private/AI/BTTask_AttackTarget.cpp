@@ -60,6 +60,7 @@ void UBTTask_AttackTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
     AActor* Target = Cast<AActor>(Blackboard->GetValueAsObject(TargetKey.SelectedKeyName));
     if (!Target || !IsValid(Target))
     {
+        AIController->StopMovement();
         FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
         return;
     }

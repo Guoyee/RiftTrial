@@ -7,6 +7,7 @@
 #include "AbilitySystemInterface.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/Pawn.h"
+#include "RiftTrialGameplayTags.h"
 
 UBTTask_AttackTarget::UBTTask_AttackTarget()
 {
@@ -84,7 +85,7 @@ void UBTTask_AttackTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 
     if (Dist > EffectiveRange)
     {
-        AIController->MoveToActor(Target, EffectiveRange * 0.8f);
+        AIController->MoveToActor(Target, 20.f);
     }
     else
     {
@@ -104,7 +105,7 @@ void UBTTask_AttackTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
             if (ASCInterface)
             {
                 UAbilitySystemComponent* ASC = ASCInterface->GetAbilitySystemComponent();
-                if (ASC)
+                if (ASC && !ASC->HasMatchingGameplayTag(FRiftTrialGameplayTags::Get().Cooldown_Attack))
                 {
                     FGameplayTagContainer TagContainer;
                     TagContainer.AddTag(AttackAbilityTag);

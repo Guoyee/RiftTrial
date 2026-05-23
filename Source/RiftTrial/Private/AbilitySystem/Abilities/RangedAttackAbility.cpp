@@ -39,7 +39,8 @@ AActor* URangedAttackAbility::GetAttackTarget()
             {
                 if (UBlackboardComponent* BB = AIC->GetBlackboardComponent())
                 {
-                    return Cast<AActor>(BB->GetValueAsObject("TargetToFollow"));
+                    AActor* Target = Cast<AActor>(BB->GetValueAsObject("TargetToFollow"));
+                    return IsValid(Target) ? Target : nullptr;
                 }
             }
         }
@@ -78,8 +79,15 @@ void URangedAttackAbility::ApplyAttackCooldown() const
 
     ASC->AddLooseGameplayTag(FRiftTrialGameplayTags::Get().Cooldown_Attack);
 
+    UWorld* World = GetWorld();
+    if (!World)
+    {
+        ASC->RemoveLooseGameplayTag(FRiftTrialGameplayTags::Get().Cooldown_Attack);
+        return;
+    }
+
     FTimerHandle TimerHandle;
-    GetWorld()->GetTimerManager().SetTimer(TimerHandle,
+    World->GetTimerManager().SetTimer(TimerHandle,
         FTimerDelegate::CreateLambda([WeakASC = TWeakObjectPtr<UAbilitySystemComponent>(ASC)]
         {
             if (UAbilitySystemComponent* ValidASC = WeakASC.Get())

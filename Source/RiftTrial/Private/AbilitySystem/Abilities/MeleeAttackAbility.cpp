@@ -21,7 +21,8 @@ AActor* UMeleeAttackAbility::GetAttackTarget()
             {
                 if (UBlackboardComponent* BB = AIC->GetBlackboardComponent())
                 {
-                    return Cast<AActor>(BB->GetValueAsObject("TargetToFollow"));
+                    AActor* Target = Cast<AActor>(BB->GetValueAsObject("TargetToFollow"));
+                    return IsValid(Target) ? Target : nullptr;
                 }
             }
         }
@@ -30,9 +31,52 @@ AActor* UMeleeAttackAbility::GetAttackTarget()
     return nullptr;
 }
 
+UAnimMontage* UMeleeAttackAbility::GetNextAttackMontage()
+{
+    if (AttackMontages.IsEmpty()) return nullptr;
+
+    // 从黑板读取当前连击索引
+    int32 Index = 0;
+    if (AActor* Avatar = GetAvatarActorFromActorInfo())
+    {
+        if (APawn* Pawn = Cast<APawn>(Avatar))
+        {
+            if (AAIController* AIC = Cast<AAIController>(Pawn->GetController()))
+            {
+                if (UBlackboardComponent* BB = AIC->GetBlackboardComponent())
+                {
+                    Index = BB->GetValueAsInt("ComboIndex");
+                }
+            }
+        }
+    }
+
+    UAnimMontage* Montage = AttackMontages[Index].Get();
+
+    // 写入下一个索引
+    const int32 NextIndex = (Index + 1) % AttackMontages.Num();
+    if (AActor* Avatar = GetAvatarActorFromActorInfo())
+    {
+        if (APawn* Pawn = Cast<APawn>(Avatar))
+        {
+            if (AAIController* AIC = Cast<AAIController>(Pawn->GetController()))
+            {
+                if (UBlackboardComponent* BB = AIC->GetBlackboardComponent())
+                {
+                    BB->SetValueAsInt("ComboIndex", NextIndex);
+                }
+            }
+        }
+    }
+
+    return Montage;
+}
+
 void UMeleeAttackAbility::ApplyDamageToTarget(AActor* Target)
 {
-    if (!Target || !DamageEffectClass) return;
+    // 伤害计算只能在服务端执行，客户端仅播放动画
+    if (!GetAvatarActorFromActorInfo()->HasAuthority()) return;
+    if (!IsValid(Target) || !DamageEffectClass) return;
 
     UAbilitySystemComponent* SourceASC = GetAbilitySystemComponentFromActorInfo();
     if (!SourceASC) return;
@@ -49,6 +93,11 @@ void UMeleeAttackAbility::ApplyDamageToTarget(AActor* Target)
     EffectContext.AddSourceObject(GetAvatarActorFromActorInfo());
 
     FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContext);
+    if (!SpecHandle.IsValid() || !SpecHandle.Data.IsValid())
+    {
+        UE_LOG(LogTemp, Error, TEXT("ApplyDamageToTarget: Failed to create GE spec"));
+        return;
+    }
 
     for (const auto& Pair : DamageTypes)
     {
@@ -77,11 +126,21 @@ void UMeleeAttackAbility::ApplyAttackCooldown()
     // 添加冷却 Tag，阻止再次激活 GA
     ASC->AddLooseGameplayTag(FRiftTrialGameplayTags::Get().Cooldown_Attack);
 
+    UWorld* World = GetWorld();
+    if (!World)
+    {
+        UE_LOG(LogTemp, Error, TEXT("ApplyAttackCooldown: GetWorld() is null, cannot set timer"));
+        ASC->RemoveLooseGameplayTag(FRiftTrialGameplayTags::Get().Cooldown_Attack);
+        return;
+    }
+
     FTimerHandle TimerHandle;
-    GetWorld()->GetTimerManager().SetTimer(TimerHandle,
+    World->GetTimerManager().SetTimer(TimerHandle,
         FTimerDelegate::CreateLambda([WeakASC = TWeakObjectPtr<UAbilitySystemComponent>(ASC)]
         {
             if (UAbilitySystemComponent* ValidASC = WeakASC.Get())
+            {
                 ValidASC->RemoveLooseGameplayTag(FRiftTrialGameplayTags::Get().Cooldown_Attack);
+            }
         }), CooldownDuration, false);
 }

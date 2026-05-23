@@ -257,4 +257,8 @@ void FRiftTrialGameplayTags::InitializeNativeGameplayTags()
         FName("Event.Montage.SpawnProjectile"),
         FString("AnimNotify event to spawn projectile during montage")
     );
+    SingletonGameplayTags.Event_Montage_AttackHit = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Event.Montage.AttackHit"),
+        FString("AnimNotify event to trigger damage during attack montage")
+    );
 }

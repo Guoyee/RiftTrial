@@ -83,6 +83,7 @@ public:
     FGameplayTag Ability_Attack_Melee;
     FGameplayTag Cooldown_Attack;
     FGameplayTag Event_Montage_SpawnProjectile;
+    FGameplayTag Event_Montage_AttackHit;
 
 private:
     static FRiftTrialGameplayTags SingletonGameplayTags;

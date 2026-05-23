@@ -8,6 +8,7 @@
 
 class ARangedProjectile;
 
+// 远程攻击 GA：向目标发射追踪弹体
 UCLASS(Blueprintable)
 class RIFTTRIAL_API URangedAttackAbility : public URiftTrialDamageGameplayAbility
 {
@@ -20,9 +21,6 @@ public:
         const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags,
         FGameplayTagContainer* OptionalRelevantTags) const override;
 
-    UFUNCTION(BlueprintCallable, Category = "Attack")
-    AActor* GetAttackTarget();
-
 protected:
     virtual FVector GetSpawnLocation();
 
@@ -33,9 +31,6 @@ protected:
     TSubclassOf<ARangedProjectile> ProjectileClass;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-    UAnimMontage* AttackMontage;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     float FlightSpeed = 3000.f;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -43,11 +38,6 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     bool bTrackTarget = true;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cooldown")
-    TSubclassOf<UGameplayEffect> AttackCooldownEffectClass;
-
-    void ApplyAttackCooldown() const;
 
 private:
     void BuildAndSpawnProjectile(AActor* Target);

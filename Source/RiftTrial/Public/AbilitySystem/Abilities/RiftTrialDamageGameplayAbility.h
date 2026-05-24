@@ -17,10 +17,6 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Attack")
     AActor* GetAttackTarget();
 
-    // 根据 AttackSpeed 属性计算冷却时长：CD = 1.0 / AttackSpeed
-    UFUNCTION(BlueprintCallable, Category = "Cooldown")
-    void ApplyAttackCooldown();
-
     // 攻击蒙太奇动画列表，按顺序轮换播放
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Montage")
     TArray<TObjectPtr<UAnimMontage>> AttackMontages;

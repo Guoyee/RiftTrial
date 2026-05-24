@@ -29,40 +29,6 @@ AActor* URiftTrialDamageGameplayAbility::GetAttackTarget()
     return nullptr;
 }
 
-void URiftTrialDamageGameplayAbility::ApplyAttackCooldown()
-{
-    UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
-    if (!ASC) return;
-
-    float AttackSpeed = 1.f;
-    if (const URiftTrialAttributeSet* AS = Cast<URiftTrialAttributeSet>(ASC->GetAttributeSet(URiftTrialAttributeSet::StaticClass())))
-    {
-        AttackSpeed = AS->GetAttackSpeed();
-        AttackSpeed = FMath::Max(AttackSpeed, 0.01f);
-    }
-
-    const float CooldownDuration = 1.0f / AttackSpeed;
-
-    ASC->AddLooseGameplayTag(FRiftTrialGameplayTags::Get().Cooldown_Attack);
-
-    UWorld* World = GetWorld();
-    if (!World)
-    {
-        ASC->RemoveLooseGameplayTag(FRiftTrialGameplayTags::Get().Cooldown_Attack);
-        return;
-    }
-
-    FTimerHandle TimerHandle;
-    World->GetTimerManager().SetTimer(TimerHandle,
-        FTimerDelegate::CreateLambda([WeakASC = TWeakObjectPtr<UAbilitySystemComponent>(ASC)]
-        {
-            if (UAbilitySystemComponent* ValidASC = WeakASC.Get())
-            {
-                ValidASC->RemoveLooseGameplayTag(FRiftTrialGameplayTags::Get().Cooldown_Attack);
-            }
-        }), CooldownDuration, false);
-}
-
 UAnimMontage* URiftTrialDamageGameplayAbility::GetNextAttackMontage()
 {
     if (AttackMontages.IsEmpty()) return nullptr;

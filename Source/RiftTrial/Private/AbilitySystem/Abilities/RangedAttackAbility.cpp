@@ -16,14 +16,8 @@ bool URangedAttackAbility::CanActivateAbility(const FGameplayAbilitySpecHandle H
     const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags,
     FGameplayTagContainer* OptionalRelevantTags) const
 {
-    if (!Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags)) return false;
-
-    if (const UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get())
-    {
-        if (ASC->HasMatchingGameplayTag(FRiftTrialGameplayTags::Get().Cooldown_Attack)) return false;
-    }
-
-    return true;
+    return Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags);
+    // 冷却由 Cooldown GE 自动处理，无需手动检查
 }
 
 FVector URangedAttackAbility::GetSpawnLocation()

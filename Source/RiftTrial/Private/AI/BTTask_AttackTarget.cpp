@@ -106,8 +106,9 @@ void UBTTask_AttackTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
             if (ASCInterface)
             {
                 UAbilitySystemComponent* ASC = ASCInterface->GetAbilitySystemComponent();
-                if (ASC && !ASC->HasMatchingGameplayTag(FRiftTrialGameplayTags::Get().Cooldown_Attack))
+                if (ASC)
                 {
+                    // 冷却由 Cooldown GE 自动处理，TryActivateAbilitiesByTag 内部会调用 CanActivateAbility
                     FGameplayTagContainer TagContainer;
                     TagContainer.AddTag(AttackAbilityTag);
                     ASC->TryActivateAbilitiesByTag(TagContainer);

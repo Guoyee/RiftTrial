@@ -17,6 +17,9 @@ class RIFTTRIAL_API ARiftTrialMinionSpawner : public AActor
 public:
     ARiftTrialMinionSpawner();
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    TObjectPtr<USkeletalMeshComponent> SpawnerMesh;
+
 protected:
     virtual void BeginPlay() override;
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
@@ -25,7 +28,10 @@ protected:
     TObjectPtr<USplineComponent> LaneSpline;
 
     UPROPERTY(EditAnywhere, Category = "Spawning")
-    TSubclassOf<ARiftTrialMinion> MinionClass;
+    TSubclassOf<ARiftTrialMinion> MeleeClass;
+
+    UPROPERTY(EditAnywhere, Category = "Spawning")
+    TSubclassOf<ARiftTrialMinion> RangedClass;
 
     UPROPERTY(EditAnywhere, Category = "Spawning")
     int32 TeamID = 1;
@@ -34,7 +40,13 @@ protected:
     float SpawnInterval = 30.f;
 
     UPROPERTY(EditAnywhere, Category = "Spawning")
-    int32 MinionsPerWave = 6;
+    int32 MeleeCount = 3;
+
+    UPROPERTY(EditAnywhere, Category = "Spawning")
+    int32 RangedCount = 3;
+
+    UPROPERTY(EditAnywhere, Category = "Spawning")
+    float SpawnDelayBetweenMinions = 0.5f;
 
     UPROPERTY(EditAnywhere, Category = "AI")
     FName SplineActorBBKey = "SplinePathActor";
@@ -44,6 +56,14 @@ protected:
 
 private:
     void SpawnWave();
+    void SpawnNextMinion();
 
     FTimerHandle SpawnTimerHandle;
+    FTimerHandle SpawnStepTimer;
+
+    FVector SpawnOrigin;
+    FRotator SpawnRot;
+    int32 SpawnIndex = 0;
+    int32 SpawnMeleeRemaining = 0;
+    int32 SpawnRangedRemaining = 0;
 };

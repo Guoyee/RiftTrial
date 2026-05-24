@@ -4,6 +4,7 @@
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Character/RiftTrialMinion.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Components/SplineComponent.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
@@ -12,8 +13,11 @@ ARiftTrialMinionSpawner::ARiftTrialMinionSpawner()
 {
     PrimaryActorTick.bCanEverTick = false;
 
+    SpawnerMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SpawnerMesh"));
+    SetRootComponent(SpawnerMesh);
+
     LaneSpline = CreateDefaultSubobject<USplineComponent>(TEXT("LaneSpline"));
-    SetRootComponent(LaneSpline);
+    LaneSpline->SetupAttachment(SpawnerMesh);
 }
 
 void ARiftTrialMinionSpawner::BeginPlay()
@@ -30,45 +34,61 @@ void ARiftTrialMinionSpawner::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     Super::EndPlay(EndPlayReason);
     GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
+    GetWorldTimerManager().ClearTimer(SpawnStepTimer);
 }
 
 void ARiftTrialMinionSpawner::SpawnWave()
 {
-    if (!MinionClass || !LaneSpline) return;
+    if (!LaneSpline) return;
 
-    const FVector SpawnOrigin = LaneSpline->GetLocationAtSplinePoint(0, ESplineCoordinateSpace::World);
-    const FVector RightDir = LaneSpline->GetRightVectorAtSplinePoint(0, ESplineCoordinateSpace::World);
+    SpawnOrigin = LaneSpline->GetLocationAtSplinePoint(0, ESplineCoordinateSpace::World);
+    SpawnRot = LaneSpline->GetRotationAtSplinePoint(0, ESplineCoordinateSpace::World);
+    SpawnIndex = 0;
+    SpawnMeleeRemaining = MeleeCount;
+    SpawnRangedRemaining = RangedCount;
 
-    for (int32 i = 0; i < MinionsPerWave; ++i)
+    SpawnNextMinion();
+}
+
+void ARiftTrialMinionSpawner::SpawnNextMinion()
+{
+    TSubclassOf<ARiftTrialMinion> Class = nullptr;
+
+    if (SpawnMeleeRemaining > 0)
     {
-        FVector SpawnLoc = SpawnOrigin + RightDir * (i * 150.f);
-        FRotator SpawnRot = LaneSpline->GetRotationAtSplinePoint(0, ESplineCoordinateSpace::World);
-
-        FActorSpawnParameters Params;
-        Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-
-        ARiftTrialMinion* Minion = GetWorld()->SpawnActorDeferred<ARiftTrialMinion>(
-            MinionClass,
-            FTransform(SpawnRot, SpawnLoc),
-            this,
-            nullptr,
-            ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
-
-        if (!Minion) continue;
-
-        Minion->TeamID = TeamID;
-        Minion->FinishSpawning(FTransform(SpawnRot, SpawnLoc));
-
-        // 下一帧写黑板（等自动 Possess + RunBehaviorTree 完成）
-        FTimerHandle InitBTTimer;
-        GetWorldTimerManager().SetTimer(InitBTTimer, [Minion, this]()
-        {
-            AAIController* AIC = Cast<AAIController>(Minion->GetController());
-            if (AIC && AIC->GetBlackboardComponent())
-            {
-                AIC->GetBlackboardComponent()->SetValueAsObject(SplineActorBBKey, this);
-                AIC->GetBlackboardComponent()->SetValueAsFloat(SplineDistanceBBKey, 0.f);
-            }
-        }, 0.1f, false);
+        Class = MeleeClass;
+        --SpawnMeleeRemaining;
     }
+    else if (SpawnRangedRemaining > 0)
+    {
+        Class = RangedClass;
+        --SpawnRangedRemaining;
+    }
+
+    if (!Class)
+    {
+        return; // 本轮波次全部生成完毕
+    }
+
+    ARiftTrialMinion* Minion = GetWorld()->SpawnActorDeferred<ARiftTrialMinion>(
+        Class, FTransform(SpawnRot, SpawnOrigin), this, nullptr,
+        ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
+
+    if (Minion)
+    {
+        Minion->TeamID = TeamID;
+        Minion->FinishSpawning(FTransform(SpawnRot, SpawnOrigin));
+
+        AAIController* AIC = Cast<AAIController>(Minion->GetController());
+        if (AIC && AIC->GetBlackboardComponent())
+        {
+            AIC->GetBlackboardComponent()->SetValueAsObject(SplineActorBBKey, this);
+            AIC->GetBlackboardComponent()->SetValueAsFloat(SplineDistanceBBKey, 0.f);
+        }
+    }
+
+    // 下一个小兵延迟生成
+    ++SpawnIndex;
+    GetWorldTimerManager().SetTimer(SpawnStepTimer, this,
+        &ARiftTrialMinionSpawner::SpawnNextMinion, SpawnDelayBetweenMinions, false);
 }

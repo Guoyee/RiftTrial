@@ -35,11 +35,7 @@ EBTNodeResult::Type UBTTask_FollowSplinePath::ExecuteTask(UBehaviorTreeComponent
 void UBTTask_FollowSplinePath::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
     UBlackboardComponent* Blackboard = OwnerComp.GetBlackboardComponent();
-    if (!Blackboard)
-    {
-        FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-        return;
-    }
+    if (!Blackboard) return;
 
     AAIController* AIController = OwnerComp.GetAIOwner();
     if (!AIController) return;
@@ -62,20 +58,20 @@ void UBTTask_FollowSplinePath::TickTask(UBehaviorTreeComponent& OwnerComp, uint8
     if (MoveSpeed <= 0.f) MoveSpeed = DefaultSpeed;
 
     AActor* SplineActor = Cast<AActor>(Blackboard->GetValueAsObject(SplineActorKey.SelectedKeyName));
-    if (!SplineActor)
-    {
-        FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-        return;
-    }
+    if (!SplineActor) return;
 
     USplineComponent* Spline = SplineActor->FindComponentByClass<USplineComponent>();
-    if (!Spline || Spline->GetNumberOfSplinePoints() == 0)
+    if (!Spline || Spline->GetNumberOfSplinePoints() == 0) return;
+
+    // 回 Spline 时从当前位置最近点出发，避免瞬移
+    float CurrentDist = Blackboard->GetValueAsFloat(SplineDistanceKey.SelectedKeyName);
+    const float ClosestInputKey = Spline->FindInputKeyClosestToWorldLocation(Pawn->GetActorLocation());
+    const float ClosestDistance = Spline->GetDistanceAlongSplineAtSplineInputKey(ClosestInputKey);
+    if (ClosestDistance > CurrentDist)
     {
-        FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-        return;
+        CurrentDist = ClosestDistance;
     }
 
-    const float CurrentDist = Blackboard->GetValueAsFloat(SplineDistanceKey.SelectedKeyName);
     const float NewDist = CurrentDist + MoveSpeed * DeltaSeconds;
     const float SplineLength = Spline->GetSplineLength();
 
@@ -86,11 +82,10 @@ void UBTTask_FollowSplinePath::TickTask(UBehaviorTreeComponent& OwnerComp, uint8
         return;
     }
 
-    const FVector Location = Spline->GetLocationAtDistanceAlongSpline(NewDist, ESplineCoordinateSpace::World);
-    const FRotator Rotation = Spline->GetRotationAtDistanceAlongSpline(NewDist, ESplineCoordinateSpace::World);
+    const FVector TargetLocation = Spline->GetLocationAtDistanceAlongSpline(NewDist, ESplineCoordinateSpace::World);
 
-    Pawn->SetActorLocation(Location);
-    Pawn->SetActorRotation(FMath::RInterpTo(Pawn->GetActorRotation(), Rotation, DeltaSeconds, 10.f));
+    // MoveToLocation 使用移动组件，自动处理地面贴合和转向
+    AIController->MoveToLocation(TargetLocation, 10.f);
 
     Blackboard->SetValueAsFloat(SplineDistanceKey.SelectedKeyName, NewDist);
 }

@@ -4,12 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "RiftTrial.h"
 #include "RiftTrialAIController.generated.h"
 
 class UBehaviorTree;
 class UBehaviorTreeComponent;
 
-UCLASS()
+UCLASS(PrioritizeCategories = "RiftTrial")
 class RIFTTRIAL_API ARiftTrialAIController : public AAIController
 {
     GENERATED_BODY()
@@ -20,7 +21,7 @@ public:
 protected:
     virtual void OnPossess(APawn* InPawn) override;
 
-    UPROPERTY(EditAnywhere, Category = CAT_AI)
+    UPROPERTY(EditAnywhere, Category = "RiftTrial|AI")
     TObjectPtr<UBehaviorTree> BehaviorTree;
 
     TObjectPtr<UBlackboardComponent> BlackboardComponent;

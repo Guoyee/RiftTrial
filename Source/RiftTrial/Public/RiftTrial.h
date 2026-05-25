@@ -9,7 +9,6 @@
 #define CUSTOM_DEPTH_BLUE 251
 
 // Category 宏定义，统一编辑器 Details 面板分类
-#define CAT_RIFTTRIAL        TEXT("RiftTrial")
 #define CAT_COMBAT           TEXT("RiftTrial|Combat")
 #define CAT_AI               TEXT("RiftTrial|AI")
 #define CAT_SPAWNING         TEXT("RiftTrial|Spawning")

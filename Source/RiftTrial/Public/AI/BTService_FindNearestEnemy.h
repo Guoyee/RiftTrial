@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTService.h"
+#include "RiftTrial.h"
 #include "BTService_FindNearestEnemy.generated.h"
 
 UCLASS()
@@ -17,12 +18,12 @@ public:
 protected:
     virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
-    UPROPERTY(EditAnywhere, Category = CAT_AI)
+    UPROPERTY(EditAnywhere, Category = "RiftTrial|AI")
     FBlackboardKeySelector TargetToFollowSelector;
 
-    UPROPERTY(EditAnywhere, Category = CAT_AI)
+    UPROPERTY(EditAnywhere, Category = "RiftTrial|AI")
     FBlackboardKeySelector DistanceToTargetSelector;
 
-    UPROPERTY(EditAnywhere, Category = CAT_AI)
+    UPROPERTY(EditAnywhere, Category = "RiftTrial|AI")
     float AggroRange = 0.f;
 };

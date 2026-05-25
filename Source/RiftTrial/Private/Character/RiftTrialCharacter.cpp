@@ -11,6 +11,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Player/RiftTrialPlayerController.h"
 #include "Player/RiftTrialPlayerState.h"
+#include "RiftTrialGameplayTags.h"
 #include "UI/HUD/RiftTrialHUD.h"
 
 ARiftTrialCharacter::ARiftTrialCharacter()
@@ -92,4 +93,5 @@ void ARiftTrialCharacter::InitAbilityActorInfo()
                 GetCharacterMovement()->MaxWalkSpeed = Data.NewValue;
             });
     }
+
 }

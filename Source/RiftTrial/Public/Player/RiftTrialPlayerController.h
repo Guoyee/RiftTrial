@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "RiftTrial.h"
 #include "RiftTrialPlayerController.generated.h"
 
 
@@ -21,7 +22,7 @@ class IEnemyInterface;
 /**
  * 
  */
-UCLASS()
+UCLASS(PrioritizeCategories = "RiftTrial")
 class RIFTTRIAL_API ARiftTrialPlayerController : public APlayerController
 {
     GENERATED_BODY()
@@ -39,10 +40,10 @@ protected:
     virtual void SetupInputComponent() override;
     
 private:
-    UPROPERTY(EditAnywhere, Category = CAT_INPUT)
+    UPROPERTY(EditAnywhere, Category = "RiftTrial|Input")
     TObjectPtr<UInputMappingContext> RTContext;
     
-    UPROPERTY(EditAnywhere, Category = CAT_INPUT)
+    UPROPERTY(EditAnywhere, Category = "RiftTrial|Input")
     TObjectPtr<UInputAction> MoveAction;
     
     void Move(const FInputActionValue& InputActionValue);
@@ -56,7 +57,7 @@ private:
     void AbilityInputTagReleased(FGameplayTag InputTag);
     void AbilityInputTagHeld(FGameplayTag InputTag);
     
-    UPROPERTY(EditDefaultsOnly, Category = CAT_INPUT)
+    UPROPERTY(EditDefaultsOnly, Category = "RiftTrial|Input")
     TObjectPtr<URiftTrialInputConfig> InputConfig;
     
     TObjectPtr<URiftTrialAbilitySystemComponent> RiftTrialAbilitySystemComponent;

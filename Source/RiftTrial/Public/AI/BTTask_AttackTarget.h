@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
 #include "GameplayTagContainer.h"
+#include "RiftTrial.h"
 #include "BTTask_AttackTarget.generated.h"
 
 UCLASS()
@@ -19,15 +20,15 @@ public:
     virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
     virtual EBTNodeResult::Type AbortTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
-    UPROPERTY(EditAnywhere, Category = CAT_AI)
+    UPROPERTY(EditAnywhere, Category = "RiftTrial|AI")
     FBlackboardKeySelector TargetKey;
 
-    UPROPERTY(EditAnywhere, Category = CAT_AI)
+    UPROPERTY(EditAnywhere, Category = "RiftTrial|AI")
     FBlackboardKeySelector AttackRangeKey;
 
-    UPROPERTY(EditAnywhere, Category = CAT_AI)
+    UPROPERTY(EditAnywhere, Category = "RiftTrial|AI")
     float AttackRange = 400.f;
 
-    UPROPERTY(EditAnywhere, Category = CAT_ABILITY)
+    UPROPERTY(EditAnywhere, Category = "RiftTrial|Ability")
     FGameplayTag AttackAbilityTag;
 };

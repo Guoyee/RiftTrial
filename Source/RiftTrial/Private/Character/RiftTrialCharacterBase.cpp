@@ -100,7 +100,12 @@ void ARiftTrialCharacterBase::MulticastPlayDeathMontage_Implementation()
 void ARiftTrialCharacterBase::BeginPlay()
 {
     Super::BeginPlay();
-    
+
+    // 应用身份标签 GE（Type.Minion / Type.Hero），自动复制到客户端
+    if (HasAuthority() && IdentityEffect)
+    {
+        ApplayEffectToSelf(IdentityEffect, 1.f);
+    }
 }
 
 int32 ARiftTrialCharacterBase::GetTeamID() const

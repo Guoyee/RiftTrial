@@ -15,20 +15,20 @@ class RIFTTRIAL_API URiftTrialDamageGameplayAbility : public URiftTrialGameplayA
 public:
     // 从黑板 "TargetToFollow" 获取当前攻击目标
     UFUNCTION(BlueprintCallable, Category = "Attack")
-    AActor* GetAttackTarget();
+    virtual AActor* GetAttackTarget();
 
     // 攻击蒙太奇动画列表，按顺序轮换播放
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = CAT_ABILITY)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RiftTrial|Ability")
     TArray<TObjectPtr<UAnimMontage>> AttackMontages;
 
     // 获取下一段攻击蒙太奇（按顺序轮换）
-    UFUNCTION(BlueprintCallable, Category = CAT_ABILITY)
+    UFUNCTION(BlueprintCallable, Category = "RiftTrial|Ability")
     UAnimMontage* GetNextAttackMontage();
 
 protected:
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = CAT_ATTRIBUTE)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RiftTrial|Attribute")
     TSubclassOf<UGameplayEffect> DamageEffectClass;
 
-    UPROPERTY(EditDefaultsOnly, Category = CAT_ABILITY)
+    UPROPERTY(EditDefaultsOnly, Category = "RiftTrial|Ability")
     TMap<FGameplayTag, FScalableFloat> DamageTypes;
 };

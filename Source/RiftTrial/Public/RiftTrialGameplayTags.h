@@ -78,6 +78,10 @@ public:
     // ===== Effects =====
     FGameplayTag Effects_HitReact;
     FGameplayTag State_Dead;
+    FGameplayTag State_Aggroed;
+    FGameplayTag Type_Minion;
+    FGameplayTag Type_Hero;
+    FGameplayTag Type_Tower;
 
     // ===== Abilities =====
     FGameplayTag Ability_Attack_Ranged;

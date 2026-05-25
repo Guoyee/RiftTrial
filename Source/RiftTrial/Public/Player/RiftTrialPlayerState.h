@@ -5,12 +5,13 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "GameFramework/PlayerState.h"
+#include "RiftTrial.h"
 #include "RiftTrialPlayerState.generated.h"
 
 class UAbilitySystemComponent;
 class UAttributeSet;
 
-UCLASS()
+UCLASS(PrioritizeCategories = "RiftTrial")
 class RIFTTRIAL_API ARiftTrialPlayerState : public APlayerState, public IAbilitySystemInterface
 {
     GENERATED_BODY()
@@ -27,7 +28,7 @@ public:
 
     void StartRespawnTimer();
 
-    UPROPERTY(EditDefaultsOnly, Category = CAT_COMBAT)
+    UPROPERTY(EditDefaultsOnly, Category = "RiftTrial|Combat")
     float RespawnDelay = 10.f;
 
 protected:

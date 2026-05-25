@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "RiftTrial.h"
 #include "RiftTrialGameModeBase.generated.h"
 
 class URiftTrialCharacterClassInfo;
@@ -18,6 +19,6 @@ protected:
     virtual void BeginPlay() override;
     
 public:
-    UPROPERTY(EditDefaultsOnly, Category = CAT_ATTRIBUTE)
+    UPROPERTY(EditDefaultsOnly, Category = "RiftTrial|Attribute")
     TObjectPtr<URiftTrialCharacterClassInfo> RiftTrialCharacterClassInfo;
 };

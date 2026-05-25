@@ -233,6 +233,22 @@ void FRiftTrialGameplayTags::InitializeNativeGameplayTags()
         FName("State.Dead"),
         FString("Actor is dead")
     );
+    SingletonGameplayTags.State_Aggroed = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("State.Aggroed"),
+        FString("Aggroed by tower, highest priority target")
+    );
+    SingletonGameplayTags.Type_Minion = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Type.Minion"),
+        FString("Minion type unit")
+    );
+    SingletonGameplayTags.Type_Hero = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Type.Hero"),
+        FString("Hero type unit")
+    );
+    SingletonGameplayTags.Type_Tower = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Type.Tower"),
+        FString("Tower type unit")
+    );
 
     /*
      * Ability Tags

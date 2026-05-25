@@ -6,6 +6,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "RiftTrial.h"
+#include "RiftTrialGameplayTags.h"
 
 ARiftTrialMinion::ARiftTrialMinion()
 {

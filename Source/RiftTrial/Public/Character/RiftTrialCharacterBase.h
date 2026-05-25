@@ -6,6 +6,7 @@
 #include "AbilitySystemInterface.h"
 #include "GameFramework/Character.h"
 #include "Interaction/CombatInterface.h"
+#include "RiftTrial.h"
 #include "RiftTrialCharacterBase.generated.h"
 
 class UGameplayAbility;
@@ -13,7 +14,7 @@ class UGameplayEffect;
 class UAbilitySystemComponent;
 class UAttributeSet;
 
-UCLASS(Abstract)
+UCLASS(Abstract, PrioritizeCategories = "RiftTrial")
 class RIFTTRIAL_API ARiftTrialCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
 {
     GENERATED_BODY()
@@ -28,15 +29,15 @@ public:
     virtual int32 GetTeamID() const override;
     /* end Combat Interface */
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CAT_TEAM)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RiftTrial|Team")
     int32 TeamID = 0;
 
     // 死亡动画 Montage
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = CAT_COMBAT)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RiftTrial|Combat")
     TObjectPtr<UAnimMontage> DeathMontage;
 
     // 死亡后销毁延迟（秒），0 表示不自动销毁
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = CAT_COMBAT)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RiftTrial|Combat")
     float DeathDestroyDelay = 5.f;
 
     UFUNCTION(NetMulticast, Reliable)
@@ -45,10 +46,10 @@ public:
 protected:
     virtual void BeginPlay() override;
 
-    UPROPERTY(EditAnywhere, Category = CAT_COMBAT)
+    UPROPERTY(EditAnywhere, Category = "RiftTrial|Combat")
     TObjectPtr<USkeletalMeshComponent> Weapon;
 
-    UPROPERTY(EditAnywhere, Category = CAT_COMBAT)
+    UPROPERTY(EditAnywhere, Category = "RiftTrial|Combat")
     FName WeaponTipSocketName;
 
     virtual FVector GetCombatSocketLocation() override;
@@ -61,11 +62,11 @@ protected:
 
     virtual void InitAbilityActorInfo();
 
-    UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = CAT_ATTRIBUTE)
+    UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "RiftTrial|Attribute")
     TSubclassOf<UGameplayEffect> DefaultAttributes;
 
     // 身份标签 GE（Type.Minion / Type.Hero），Duration=Infinite
-    UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = CAT_ATTRIBUTE)
+    UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "RiftTrial|Attribute")
     TSubclassOf<UGameplayEffect> IdentityEffect;
 
     void ApplayEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const;
@@ -75,6 +76,6 @@ protected:
     void AddCharacterAbilities() const;
 
 private:
-    UPROPERTY(EditAnywhere, Category = CAT_ABILITY)
+    UPROPERTY(EditAnywhere, Category = "RiftTrial|Ability")
     TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
 };

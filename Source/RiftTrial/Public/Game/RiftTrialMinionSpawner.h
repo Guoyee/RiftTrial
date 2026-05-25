@@ -4,12 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "RiftTrial.h"
 #include "RiftTrialMinionSpawner.generated.h"
 
 class ARiftTrialMinion;
 class USplineComponent;
 
-UCLASS()
+UCLASS(PrioritizeCategories = "RiftTrial")
 class RIFTTRIAL_API ARiftTrialMinionSpawner : public AActor
 {
     GENERATED_BODY()
@@ -27,31 +28,31 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
     TObjectPtr<USplineComponent> LaneSpline;
 
-    UPROPERTY(EditAnywhere, Category = CAT_SPAWNING)
+    UPROPERTY(EditAnywhere, Category = "RiftTrial|Spawning")
     TSubclassOf<ARiftTrialMinion> MeleeClass;
 
-    UPROPERTY(EditAnywhere, Category = CAT_SPAWNING)
+    UPROPERTY(EditAnywhere, Category = "RiftTrial|Spawning")
     TSubclassOf<ARiftTrialMinion> RangedClass;
 
-    UPROPERTY(EditAnywhere, Category = CAT_SPAWNING)
+    UPROPERTY(EditAnywhere, Category = "RiftTrial|Spawning")
     int32 TeamID = 1;
 
-    UPROPERTY(EditAnywhere, Category = CAT_SPAWNING)
+    UPROPERTY(EditAnywhere, Category = "RiftTrial|Spawning")
     float SpawnInterval = 30.f;
 
-    UPROPERTY(EditAnywhere, Category = CAT_SPAWNING)
+    UPROPERTY(EditAnywhere, Category = "RiftTrial|Spawning")
     int32 MeleeCount = 3;
 
-    UPROPERTY(EditAnywhere, Category = CAT_SPAWNING)
+    UPROPERTY(EditAnywhere, Category = "RiftTrial|Spawning")
     int32 RangedCount = 3;
 
-    UPROPERTY(EditAnywhere, Category = CAT_SPAWNING)
+    UPROPERTY(EditAnywhere, Category = "RiftTrial|Spawning")
     float SpawnDelayBetweenMinions = 0.5f;
 
-    UPROPERTY(EditAnywhere, Category = CAT_AI)
+    UPROPERTY(EditAnywhere, Category = "RiftTrial|AI")
     FName SplineActorBBKey = "SplinePathActor";
 
-    UPROPERTY(EditAnywhere, Category = CAT_AI)
+    UPROPERTY(EditAnywhere, Category = "RiftTrial|AI")
     FName SplineDistanceBBKey = "SplineDistance";
 
 private:

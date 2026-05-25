@@ -27,10 +27,10 @@ public:
     FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
     FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CAT_CAMERA)
     float CameraArmLength = 2000.f;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CAT_CAMERA)
     FRotator CameraRotation = FRotator(-60.f, -90.f, 0.f);
 
 protected:

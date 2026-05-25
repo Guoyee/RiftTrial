@@ -27,31 +27,31 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
     TObjectPtr<USplineComponent> LaneSpline;
 
-    UPROPERTY(EditAnywhere, Category = "Spawning")
+    UPROPERTY(EditAnywhere, Category = CAT_SPAWNING)
     TSubclassOf<ARiftTrialMinion> MeleeClass;
 
-    UPROPERTY(EditAnywhere, Category = "Spawning")
+    UPROPERTY(EditAnywhere, Category = CAT_SPAWNING)
     TSubclassOf<ARiftTrialMinion> RangedClass;
 
-    UPROPERTY(EditAnywhere, Category = "Spawning")
+    UPROPERTY(EditAnywhere, Category = CAT_SPAWNING)
     int32 TeamID = 1;
 
-    UPROPERTY(EditAnywhere, Category = "Spawning")
+    UPROPERTY(EditAnywhere, Category = CAT_SPAWNING)
     float SpawnInterval = 30.f;
 
-    UPROPERTY(EditAnywhere, Category = "Spawning")
+    UPROPERTY(EditAnywhere, Category = CAT_SPAWNING)
     int32 MeleeCount = 3;
 
-    UPROPERTY(EditAnywhere, Category = "Spawning")
+    UPROPERTY(EditAnywhere, Category = CAT_SPAWNING)
     int32 RangedCount = 3;
 
-    UPROPERTY(EditAnywhere, Category = "Spawning")
+    UPROPERTY(EditAnywhere, Category = CAT_SPAWNING)
     float SpawnDelayBetweenMinions = 0.5f;
 
-    UPROPERTY(EditAnywhere, Category = "AI")
+    UPROPERTY(EditAnywhere, Category = CAT_AI)
     FName SplineActorBBKey = "SplinePathActor";
 
-    UPROPERTY(EditAnywhere, Category = "AI")
+    UPROPERTY(EditAnywhere, Category = CAT_AI)
     FName SplineDistanceBBKey = "SplineDistance";
 
 private:

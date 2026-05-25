@@ -18,12 +18,12 @@ public:
     virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
     virtual FString GetStaticDescription() const override;
 
-    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    UPROPERTY(EditAnywhere, Category = CAT_AI)
     FBlackboardKeySelector SplineActorKey;
 
-    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    UPROPERTY(EditAnywhere, Category = CAT_AI)
     FBlackboardKeySelector SplineDistanceKey;
 
-    UPROPERTY(EditAnywhere, Category = "Config")
+    UPROPERTY(EditAnywhere, Category = CAT_AI)
     float DefaultSpeed = 200.f;
 };

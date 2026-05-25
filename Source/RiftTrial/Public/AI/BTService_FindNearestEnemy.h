@@ -17,12 +17,12 @@ public:
 protected:
     virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
-    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    UPROPERTY(EditAnywhere, Category = CAT_AI)
     FBlackboardKeySelector TargetToFollowSelector;
 
-    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    UPROPERTY(EditAnywhere, Category = CAT_AI)
     FBlackboardKeySelector DistanceToTargetSelector;
 
-    UPROPERTY(EditAnywhere, Category = "Config")
+    UPROPERTY(EditAnywhere, Category = CAT_AI)
     float AggroRange = 0.f;
 };

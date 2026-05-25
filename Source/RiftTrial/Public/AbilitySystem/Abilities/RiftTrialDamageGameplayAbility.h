@@ -18,17 +18,17 @@ public:
     AActor* GetAttackTarget();
 
     // 攻击蒙太奇动画列表，按顺序轮换播放
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Montage")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = CAT_ABILITY)
     TArray<TObjectPtr<UAnimMontage>> AttackMontages;
 
     // 获取下一段攻击蒙太奇（按顺序轮换）
-    UFUNCTION(BlueprintCallable, Category = "Montage")
+    UFUNCTION(BlueprintCallable, Category = CAT_ABILITY)
     UAnimMontage* GetNextAttackMontage();
 
 protected:
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = CAT_ATTRIBUTE)
     TSubclassOf<UGameplayEffect> DamageEffectClass;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Damage")
+    UPROPERTY(EditDefaultsOnly, Category = CAT_ABILITY)
     TMap<FGameplayTag, FScalableFloat> DamageTypes;
 };

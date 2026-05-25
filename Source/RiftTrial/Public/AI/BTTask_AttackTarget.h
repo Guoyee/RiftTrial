@@ -19,15 +19,15 @@ public:
     virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
     virtual EBTNodeResult::Type AbortTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
-    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    UPROPERTY(EditAnywhere, Category = CAT_AI)
     FBlackboardKeySelector TargetKey;
 
-    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    UPROPERTY(EditAnywhere, Category = CAT_AI)
     FBlackboardKeySelector AttackRangeKey;
 
-    UPROPERTY(EditAnywhere, Category = "Config")
+    UPROPERTY(EditAnywhere, Category = CAT_AI)
     float AttackRange = 400.f;
 
-    UPROPERTY(EditAnywhere, Category = "Ability")
+    UPROPERTY(EditAnywhere, Category = CAT_ABILITY)
     FGameplayTag AttackAbilityTag;
 };

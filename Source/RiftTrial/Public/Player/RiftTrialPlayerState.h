@@ -9,28 +9,25 @@
 
 class UAbilitySystemComponent;
 class UAttributeSet;
-/**
- * 
- */
+
 UCLASS()
 class RIFTTRIAL_API ARiftTrialPlayerState : public APlayerState, public IAbilitySystemInterface
 {
     GENERATED_BODY()
+
 public:
     ARiftTrialPlayerState();
-    virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
     virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-    UAttributeSet* GetAttributeSet() const {return AttributeSet;}
-    
+    UAttributeSet* GetAttributeSet() const { return AttributeSet; }
+
     FORCEINLINE int32 GetPlayerLevel() const { return Level; }
     FORCEINLINE int32 GetAvailableSkillPoints() const { return AvailableSkillPoints; }
     void AddSkillPoint() { ++AvailableSkillPoints; }
     void SpendSkillPoint() { if (AvailableSkillPoints > 0) --AvailableSkillPoints; }
 
-    // 启动复活倒计时
     void StartRespawnTimer();
 
-    UPROPERTY(EditDefaultsOnly, Category = "Respawn")
+    UPROPERTY(EditDefaultsOnly, Category = CAT_COMBAT)
     float RespawnDelay = 10.f;
 
 protected:

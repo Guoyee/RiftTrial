@@ -24,7 +24,7 @@ struct FCharacterClassDefaultInfo
     GENERATED_BODY()
 
     // 英雄基础属性 GE（所有基础属性在此 GE 中设定）
-    UPROPERTY(EditDefaultsOnly, Category = "Class Defaults")
+    UPROPERTY(EditDefaultsOnly, Category = CAT_ATTRIBUTE)
     TSubclassOf<UGameplayEffect> DefaultAttributes;
 };
 
@@ -34,7 +34,7 @@ class RIFTTRIAL_API URiftTrialCharacterClassInfo : public UDataAsset
     GENERATED_BODY()
 public:
     // 英雄职业 → 默认属性 GE
-    UPROPERTY(EditDefaultsOnly, Category = "Character Class Defaults")
+    UPROPERTY(EditDefaultsOnly, Category = CAT_ATTRIBUTE)
     TMap<ECharacterClass, FCharacterClassDefaultInfo> CharacterClassInformation;
 
     // 小兵等非英雄单位共用属性 GE

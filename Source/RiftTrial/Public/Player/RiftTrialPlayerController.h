@@ -39,10 +39,10 @@ protected:
     virtual void SetupInputComponent() override;
     
 private:
-    UPROPERTY(EditAnywhere, Category="Input")
+    UPROPERTY(EditAnywhere, Category = CAT_INPUT)
     TObjectPtr<UInputMappingContext> RTContext;
     
-    UPROPERTY(EditAnywhere, Category="Input")
+    UPROPERTY(EditAnywhere, Category = CAT_INPUT)
     TObjectPtr<UInputAction> MoveAction;
     
     void Move(const FInputActionValue& InputActionValue);
@@ -56,7 +56,7 @@ private:
     void AbilityInputTagReleased(FGameplayTag InputTag);
     void AbilityInputTagHeld(FGameplayTag InputTag);
     
-    UPROPERTY(EditDefaultsOnly, Category="Input")
+    UPROPERTY(EditDefaultsOnly, Category = CAT_INPUT)
     TObjectPtr<URiftTrialInputConfig> InputConfig;
     
     TObjectPtr<URiftTrialAbilitySystemComponent> RiftTrialAbilitySystemComponent;

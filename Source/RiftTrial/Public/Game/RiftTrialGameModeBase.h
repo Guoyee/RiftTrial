@@ -18,6 +18,6 @@ protected:
     virtual void BeginPlay() override;
     
 public:
-    UPROPERTY(EditDefaultsOnly, Category="Character Class Defaults")
+    UPROPERTY(EditDefaultsOnly, Category = CAT_ATTRIBUTE)
     TObjectPtr<URiftTrialCharacterClassInfo> RiftTrialCharacterClassInfo;
 };

@@ -20,7 +20,7 @@ public:
 protected:
     virtual void OnPossess(APawn* InPawn) override;
 
-    UPROPERTY(EditAnywhere, Category = "AI")
+    UPROPERTY(EditAnywhere, Category = CAT_AI)
     TObjectPtr<UBehaviorTree> BehaviorTree;
 
     TObjectPtr<UBlackboardComponent> BlackboardComponent;

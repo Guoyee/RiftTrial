@@ -13,6 +13,7 @@ class UGameplayAbility;
 class UGameplayEffect;
 class UAbilitySystemComponent;
 class UAttributeSet;
+class UHealthBarComponent;
 
 UCLASS(Abstract, PrioritizeCategories = "RiftTrial")
 class RIFTTRIAL_API ARiftTrialCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
@@ -45,6 +46,9 @@ public:
 
 protected:
     virtual void BeginPlay() override;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RiftTrial|UI")
+    TObjectPtr<UHealthBarComponent> HealthBar;
 
     UPROPERTY(EditAnywhere, Category = "RiftTrial|Combat")
     TObjectPtr<USkeletalMeshComponent> Weapon;

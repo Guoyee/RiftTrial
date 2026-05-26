@@ -14,6 +14,7 @@
 #include "RiftTrial.h"
 #include "RiftTrialGameplayTags.h"
 #include "TimerManager.h"
+#include "UI/Widgets/HealthBarComponent.h"
 
 // Sets default values
 ARiftTrialCharacterBase::ARiftTrialCharacterBase()
@@ -26,7 +27,11 @@ ARiftTrialCharacterBase::ARiftTrialCharacterBase()
     GetMesh()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
     GetMesh()->SetGenerateOverlapEvents(true);
     
+    HealthBar = CreateDefaultSubobject<UHealthBarComponent>("HealthBar");
+    HealthBar->SetupAttachment(GetRootComponent());
+
     Weapon = CreateDefaultSubobject<USkeletalMeshComponent>("Weapon");
+
     Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));
     Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }

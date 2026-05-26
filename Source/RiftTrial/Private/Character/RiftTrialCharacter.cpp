@@ -13,6 +13,7 @@
 #include "Player/RiftTrialPlayerState.h"
 #include "RiftTrialGameplayTags.h"
 #include "UI/HUD/RiftTrialHUD.h"
+#include "UI/Widgets/HealthBarComponent.h"
 
 ARiftTrialCharacter::ARiftTrialCharacter()
 {
@@ -92,6 +93,11 @@ void ARiftTrialCharacter::InitAbilityActorInfo()
             {
                 GetCharacterMovement()->MaxWalkSpeed = Data.NewValue;
             });
+    }
+
+    if (HealthBar)
+    {
+        HealthBar->BindToAbilitySystem(AbilitySystemComponent);
     }
 
 }

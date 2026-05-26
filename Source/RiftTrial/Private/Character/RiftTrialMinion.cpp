@@ -7,6 +7,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "RiftTrial.h"
 #include "RiftTrialGameplayTags.h"
+#include "UI/Widgets/HealthBarComponent.h"
 
 ARiftTrialMinion::ARiftTrialMinion()
 {
@@ -46,6 +47,11 @@ void ARiftTrialMinion::InitAbilityActorInfo()
             {
                 GetCharacterMovement()->MaxWalkSpeed = Data.NewValue;
             });
+    }
+
+    if (HealthBar)
+    {
+        HealthBar->BindToAbilitySystem(AbilitySystemComponent);
     }
 }
 

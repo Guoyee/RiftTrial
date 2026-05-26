@@ -16,6 +16,7 @@ class UAttributeSet;
 class UGameplayAbility;
 class USphereComponent;
 class USkeletalMeshComponent;
+class UHealthBarComponent;
 
 // 防御塔：碰撞事件维护目标列表，按优先级自动攻击
 UCLASS(PrioritizeCategories = "RiftTrial")
@@ -49,6 +50,9 @@ protected:
     UFUNCTION(BlueprintCallable)
     virtual void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
         UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RiftTrial|UI")
+    TObjectPtr<UHealthBarComponent> HealthBar;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
     TObjectPtr<USkeletalMeshComponent> TowerMesh;

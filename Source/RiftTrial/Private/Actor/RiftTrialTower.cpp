@@ -8,6 +8,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "RiftTrialGameplayTags.h"
+#include "UI/Widgets/HealthBarComponent.h"
 
 ARiftTrialTower::ARiftTrialTower()
 {
@@ -28,6 +29,10 @@ ARiftTrialTower::ARiftTrialTower()
     AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 
     AttributeSet = CreateDefaultSubobject<URiftTrialAttributeSet>(TEXT("AttributeSet"));
+
+    HealthBar = CreateDefaultSubobject<UHealthBarComponent>("HealthBar");
+    HealthBar->SetupAttachment(TowerMesh);
+    HealthBar->SetRelativeLocation(FVector(0.f, 0.f, 300.f));
 }
 
 void ARiftTrialTower::BeginPlay()
@@ -40,6 +45,11 @@ void ARiftTrialTower::BeginPlay()
     AbilitySystemComponent->InitAbilityActorInfo(this, this);
     Cast<URiftTrialAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
     InitializeAttributes();
+
+    if (HealthBar)
+    {
+        HealthBar->BindToAbilitySystem(AbilitySystemComponent);
+    }
 
     // 应用身份标签 GE（Type.Tower）
     if (HasAuthority() && IdentityEffect)

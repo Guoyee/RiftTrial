@@ -98,6 +98,7 @@ void ARiftTrialCharacter::InitAbilityActorInfo()
     if (HealthBar)
     {
         HealthBar->BindToAbilitySystem(AbilitySystemComponent);
+        HealthBar->SetPlayerLevel(GetPlayerLevel());
     }
 
 }

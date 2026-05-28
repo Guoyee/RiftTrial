@@ -16,5 +16,11 @@ public:
 	void OnHealthPercentUpdated(float NewHealthPercent);
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void SetTeamColor(bool bIsEnemy);
+	void OnManaUpdated(float CurrentMana, float MaxMana);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnLevelUpdated(int32 Level);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void SetTeamColor(bool bIsEnemy, bool bIsSelf);
 };

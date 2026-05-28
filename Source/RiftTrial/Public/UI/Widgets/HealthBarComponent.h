@@ -20,6 +20,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void BindToAbilitySystem(UAbilitySystemComponent* InASC);
 
+	UFUNCTION(BlueprintCallable)
+	void SetPlayerLevel(int32 Level);
+
 	UFUNCTION(BlueprintPure)
 	float GetHealthPercent() const { return HealthPercent; }
 
@@ -28,7 +31,10 @@ public:
 protected:
 	void OnHealthChanged(const struct FOnAttributeChangeData& Data);
 	void OnMaxHealthChanged(const struct FOnAttributeChangeData& Data);
+	void OnManaChanged(const struct FOnAttributeChangeData& Data);
+	void OnMaxManaChanged(const struct FOnAttributeChangeData& Data);
 	void UpdateDisplay();
+	void UpdateManaDisplay();
 
 	UPROPERTY(BlueprintReadOnly, Category = "RiftTrial|UI")
 	float HealthPercent = 1.f;
@@ -38,6 +44,9 @@ private:
 
 	float CurrentHealth = 1.f;
 	float CurrentMaxHealth = 1.f;
+	float CurrentMana = 0.f;
+	float CurrentMaxMana = 0.f;
+	int32 PlayerLevel = 1;
 
 	UPROPERTY()
 	TObjectPtr<UHealthBarWidget> CachedWidget;

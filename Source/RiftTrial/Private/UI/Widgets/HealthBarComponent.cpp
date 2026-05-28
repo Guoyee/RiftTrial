@@ -22,6 +22,15 @@ void UHealthBarComponent::InitWidget()
 	{
 		CachedWidget = Cast<UHealthBarWidget>(WidgetObj);
 	}
+
+	// Widget 可能在 BindToAbilitySystem 之后才创建，补推当前值
+	DetermineTeamColor();
+	UpdateDisplay();
+	UpdateManaDisplay();
+	if (CachedWidget)
+	{
+		CachedWidget->OnLevelUpdated(PlayerLevel);
+	}
 }
 
 void UHealthBarComponent::BindToAbilitySystem(UAbilitySystemComponent* InASC)
@@ -33,6 +42,8 @@ void UHealthBarComponent::BindToAbilitySystem(UAbilitySystemComponent* InASC)
 
 	CurrentHealth = AS->GetHealth();
 	CurrentMaxHealth = AS->GetMaxHealth();
+	CurrentMana = AS->GetMana();
+	CurrentMaxMana = AS->GetMaxMana();
 
 	InASC->GetGameplayAttributeValueChangeDelegate(AS->GetHealthAttribute())
 	     .AddUObject(this, &UHealthBarComponent::OnHealthChanged);
@@ -40,10 +51,16 @@ void UHealthBarComponent::BindToAbilitySystem(UAbilitySystemComponent* InASC)
 	InASC->GetGameplayAttributeValueChangeDelegate(AS->GetMaxHealthAttribute())
 	     .AddUObject(this, &UHealthBarComponent::OnMaxHealthChanged);
 
-	// 队伍颜色只设一次
+	InASC->GetGameplayAttributeValueChangeDelegate(AS->GetManaAttribute())
+	     .AddUObject(this, &UHealthBarComponent::OnManaChanged);
+
+	InASC->GetGameplayAttributeValueChangeDelegate(AS->GetMaxManaAttribute())
+	     .AddUObject(this, &UHealthBarComponent::OnMaxManaChanged);
+
 	DetermineTeamColor();
 
 	UpdateDisplay();
+	UpdateManaDisplay();
 }
 
 void UHealthBarComponent::DetermineTeamColor()
@@ -55,22 +72,36 @@ void UHealthBarComponent::DetermineTeamColor()
 	if (!CachedWidget) return;
 
 	bool bIsEnemy = false;
+	bool bIsSelf = false;
 	if (const ICombatInterface* OwnerCombat = Cast<ICombatInterface>(GetOwner()))
 	{
-		const int32 OwnerTeam = OwnerCombat->GetTeamID();
-		if (OwnerTeam != 0)
+		if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
 		{
-			if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
+			if (APawn* PlayerPawn = PC->GetPawn())
 			{
-				if (const ICombatInterface* PlayerCombat = Cast<ICombatInterface>(PC->GetPawn()))
+				bIsSelf = (GetOwner() == PlayerPawn);
+				if (!bIsSelf)
 				{
-					bIsEnemy = (OwnerTeam != PlayerCombat->GetTeamID());
+					if (const ICombatInterface* PlayerCombat = Cast<ICombatInterface>(PlayerPawn))
+					{
+						const int32 OwnerTeam = OwnerCombat->GetTeamID();
+						bIsEnemy = (OwnerTeam != 0 && OwnerTeam != PlayerCombat->GetTeamID());
+					}
 				}
 			}
 		}
 	}
 
-	CachedWidget->SetTeamColor(bIsEnemy);
+	CachedWidget->SetTeamColor(bIsEnemy, bIsSelf);
+}
+
+void UHealthBarComponent::SetPlayerLevel(int32 Level)
+{
+	PlayerLevel = Level;
+	if (CachedWidget)
+	{
+		CachedWidget->OnLevelUpdated(PlayerLevel);
+	}
 }
 
 void UHealthBarComponent::OnHealthChanged(const FOnAttributeChangeData& Data)
@@ -83,6 +114,18 @@ void UHealthBarComponent::OnMaxHealthChanged(const FOnAttributeChangeData& Data)
 {
 	CurrentMaxHealth = Data.NewValue;
 	UpdateDisplay();
+}
+
+void UHealthBarComponent::OnManaChanged(const FOnAttributeChangeData& Data)
+{
+	CurrentMana = Data.NewValue;
+	UpdateManaDisplay();
+}
+
+void UHealthBarComponent::OnMaxManaChanged(const FOnAttributeChangeData& Data)
+{
+	CurrentMaxMana = Data.NewValue;
+	UpdateManaDisplay();
 }
 
 void UHealthBarComponent::UpdateDisplay()
@@ -101,5 +144,18 @@ void UHealthBarComponent::UpdateDisplay()
 	{
 		CachedWidget->OnHealthPercentUpdated(HealthPercent);
 		CachedWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
+	}
+}
+
+void UHealthBarComponent::UpdateManaDisplay()
+{
+	if (!CachedWidget)
+	{
+		CachedWidget = Cast<UHealthBarWidget>(GetUserWidgetObject());
+	}
+
+	if (CachedWidget)
+	{
+		CachedWidget->OnManaUpdated(CurrentMana, CurrentMaxMana);
 	}
 }

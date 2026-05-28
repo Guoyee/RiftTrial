@@ -5,6 +5,7 @@
 
 #include "AbilitySystem/RiftTrialAbilitySystemComponent.h"
 #include "AbilitySystem/RiftTrialAttributeSet.h"
+#include "Player/RiftTrialPlayerState.h"
 
 void UOverlayWidgetController::BroadcastInitialValues()
 {
@@ -15,6 +16,9 @@ void UOverlayWidgetController::BroadcastInitialValues()
     
     OnManaChanged.Broadcast(RiftTrialAttributeSet->GetMana());
     OnMaxManaChanged.Broadcast(RiftTrialAttributeSet->GetMaxMana());
+
+    const ARiftTrialPlayerState* PS = Cast<ARiftTrialPlayerState>(PlayerState);
+    OnPlayerLevelChanged.Broadcast(PS ? PS->GetPlayerLevel() : 1);
 }
 
 void UOverlayWidgetController::BindCallbacksToDependencies()

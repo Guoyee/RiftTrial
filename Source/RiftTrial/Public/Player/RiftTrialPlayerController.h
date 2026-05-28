@@ -16,7 +16,7 @@ class URiftTrialInputConfig;
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
-class IEnemyInterface;
+class ICombatInterface;
 
 
 /**
@@ -49,8 +49,8 @@ private:
     void Move(const FInputActionValue& InputActionValue);
     
     void CursorTrace();
-    IEnemyInterface* LastActor;
-    IEnemyInterface* ThisActor;
+    ICombatInterface* LastActor;
+    ICombatInterface* ThisActor;
     FHitResult CursorHit;
     
     void AbilityInputTagPressed(FGameplayTag InputTag);

@@ -71,7 +71,7 @@ void ARiftTrialPlayerController::CursorTrace()
     if (!CursorHit.bBlockingHit) return;
 
     LastActor = ThisActor;
-    ThisActor = Cast<IEnemyInterface>(CursorHit.GetActor());
+    ThisActor = Cast<ICombatInterface>(CursorHit.GetActor());
 
     if (LastActor != ThisActor)
     {

@@ -22,6 +22,7 @@ ARiftTrialCharacterBase::ARiftTrialCharacterBase()
     PrimaryActorTick.bCanEverTick = false;
     
     GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+    GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
     GetCapsuleComponent()->SetGenerateOverlapEvents(false);
     GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
     GetMesh()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
@@ -126,6 +127,17 @@ FVector ARiftTrialCharacterBase::GetCombatSocketLocation()
     }
     // 小兵等没有独立武器模型的单位，从角色 Mesh 的 Socket 获取
     return GetMesh()->GetSocketLocation(WeaponTipSocketName);
+}
+
+void ARiftTrialCharacterBase::HighlightActor(int32 StencilValue)
+{
+    GetMesh()->SetRenderCustomDepth(true);
+    GetMesh()->SetCustomDepthStencilValue(StencilValue);
+}
+
+void ARiftTrialCharacterBase::UnHighlightActor()
+{
+    GetMesh()->SetRenderCustomDepth(false);
 }
 
 void ARiftTrialCharacterBase::InitAbilityActorInfo()

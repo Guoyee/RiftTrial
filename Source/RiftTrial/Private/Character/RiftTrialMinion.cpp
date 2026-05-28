@@ -55,13 +55,3 @@ void ARiftTrialMinion::InitAbilityActorInfo()
     }
 }
 
-void ARiftTrialMinion::HighlightActor(int32 StencilValue)
-{
-    GetMesh()->SetRenderCustomDepth(true);
-    GetMesh()->SetCustomDepthStencilValue(StencilValue);
-}
-
-void ARiftTrialMinion::UnHighlightActor()
-{
-    GetMesh()->SetRenderCustomDepth(false);
-}

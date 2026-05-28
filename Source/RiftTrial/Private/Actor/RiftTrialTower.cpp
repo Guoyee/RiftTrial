@@ -6,6 +6,7 @@
 #include "AbilitySystem/RiftTrialAttributeSet.h"
 #include "AbilitySystemInterface.h"
 #include "Components/SphereComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "RiftTrialGameplayTags.h"
 #include "UI/Widgets/HealthBarComponent.h"
@@ -16,6 +17,14 @@ ARiftTrialTower::ARiftTrialTower()
 
     TowerMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("TowerMesh"));
     SetRootComponent(TowerMesh);
+
+    CursorCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CursorCapsule"));
+    CursorCapsule->SetupAttachment(TowerMesh);
+    CursorCapsule->SetCapsuleHalfHeight(200.f);
+    CursorCapsule->SetCapsuleRadius(100.f);
+    CursorCapsule->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+    CursorCapsule->SetCollisionResponseToAllChannels(ECR_Ignore);
+    CursorCapsule->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 
     DetectionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("DetectionSphere"));
     DetectionSphere->SetupAttachment(TowerMesh);
@@ -111,6 +120,17 @@ void ARiftTrialTower::Die()
 
     DetectionSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     SetLifeSpan(5.f);
+}
+
+void ARiftTrialTower::HighlightActor(int32 StencilValue)
+{
+    TowerMesh->SetRenderCustomDepth(true);
+    TowerMesh->SetCustomDepthStencilValue(StencilValue);
+}
+
+void ARiftTrialTower::UnHighlightActor()
+{
+    TowerMesh->SetRenderCustomDepth(false);
 }
 
 AActor* ARiftTrialTower::SelectTarget()

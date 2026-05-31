@@ -4,6 +4,7 @@
 #include "Player/RiftTrialPlayerController.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "Character/RiftTrialCharacter.h"
 #include "RiftTrialGameplayTags.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameplayTagContainer.h"
@@ -96,6 +97,31 @@ void ARiftTrialPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
     {
         bTargeting = ThisActor ? true : false;
         bAutoRunning = false;
+
+        // 设置 / 清除英雄攻击目标
+        if (ARiftTrialCharacter* Hero = Cast<ARiftTrialCharacter>(GetPawn()))
+        {
+            if (bTargeting && CursorHit.GetActor())
+            {
+                Hero->SetAttackTarget(CursorHit.GetActor());
+            }
+            else
+            {
+                Hero->ClearAttackTarget();
+                Hero->ClearBufferedAbilityTarget();
+            }
+        }
+    }
+    if (InputTag.MatchesTagExact(FRiftTrialGameplayTags::Get().InputTag_R))
+    {
+        if (ARiftTrialCharacter* Hero = Cast<ARiftTrialCharacter>(GetPawn()))
+        {
+            if (ThisActor && CursorHit.GetActor())
+            {
+                Hero->SetBufferedAbilityTarget(CursorHit.GetActor(),
+                    FRiftTrialGameplayTags::Get().InputTag_R);
+            }
+        }
     }
     if (InputTag.MatchesTagExact(FRiftTrialGameplayTags::Get().InputTag_LMB)) bAutoRunning = false;
 }
@@ -113,10 +139,7 @@ void ARiftTrialPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
     
     if (bTargeting)
     {
-        if (GetASC())
-        {
-            GetASC()->AbilityInputTagReleased(InputTag);
-        }
+        // 不再通过 ASC 输入激活普攻 — Character::Tick 统一处理（含距离检查）
         bTargeting = false;
     }else
     {
@@ -158,7 +181,7 @@ void ARiftTrialPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
     
     if (bTargeting)
     {
-        if (GetASC()) GetASC()->AbilityInputTagHeld(InputTag);
+        // 不再通过 ASC 输入激活普攻 — Character::Tick 统一处理（含距离检查）
     }else
     {
         FollowTime += GetWorld()->GetDeltaSeconds();

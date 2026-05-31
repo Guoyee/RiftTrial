@@ -13,7 +13,8 @@ class RIFTTRIAL_API URiftTrialDamageGameplayAbility : public URiftTrialGameplayA
     GENERATED_BODY()
 
 public:
-    // 从黑板 "TargetToFollow" 获取当前攻击目标
+    // 获取当前攻击目标：优先从 AI 黑板读取（小兵/塔），
+    // 若无效则从 ARiftTrialCharacter::CurrentAttackTarget 读取（玩家英雄）
     UFUNCTION(BlueprintCallable, Category = "Attack")
     virtual AActor* GetAttackTarget();
 
@@ -24,6 +25,14 @@ public:
     // 获取下一段攻击蒙太奇（按顺序轮换）
     UFUNCTION(BlueprintCallable, Category = "RiftTrial|Ability")
     UAnimMontage* GetNextAttackMontage();
+
+    // 获取当前攻速（用于蒙太奇播放速度），默认 1.0
+    UFUNCTION(BlueprintCallable, Category = "RiftTrial|Ability")
+    float GetAttackSpeed() const;
+
+    // 向目标直接施加伤害 GE（使用 DamageEffectClass + DamageTypes）
+    UFUNCTION(BlueprintCallable, Category = "Attack")
+    void ApplyDamageToTarget(AActor* Target);
 
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RiftTrial|Attribute")

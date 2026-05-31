@@ -58,7 +58,7 @@ struct TStructOpsTypeTraits< FRiftTrialGameplayEffectContext > : public TStructO
     enum
     {
         WithNetSerializer = true,
-        WithCopy = true		// Necessary so that TSharedPtr<FHitResult> Data is copied around
+        WithCopy = true        // Necessary so that TSharedPtr<FHitResult> Data is copied around
     };
 };
    

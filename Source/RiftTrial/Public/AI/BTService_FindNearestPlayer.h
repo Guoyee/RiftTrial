@@ -12,8 +12,8 @@
 UCLASS()
 class RIFTTRIAL_API UBTService_FindNearestPlayer : public UBTService_BlueprintBase
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+    
 protected:
     
     virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;

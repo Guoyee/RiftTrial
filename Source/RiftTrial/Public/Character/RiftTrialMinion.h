@@ -9,12 +9,12 @@
 UCLASS()
 class RIFTTRIAL_API ARiftTrialMinion : public ARiftTrialCharacterBase
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	ARiftTrialMinion();
+    ARiftTrialMinion();
 
 protected:
-	virtual void BeginPlay() override;
-	virtual void InitAbilityActorInfo() override;
+    virtual void BeginPlay() override;
+    virtual void InitAbilityActorInfo() override;
 };

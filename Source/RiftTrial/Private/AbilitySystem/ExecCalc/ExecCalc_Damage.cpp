@@ -15,6 +15,7 @@ struct FDamageCaptureDefs
     DECLARE_ATTRIBUTE_CAPTUREDEF(MagicPenetrationFlat);
     DECLARE_ATTRIBUTE_CAPTUREDEF(MagicPenetrationPercent);
     DECLARE_ATTRIBUTE_CAPTUREDEF(CritChance);
+    DECLARE_ATTRIBUTE_CAPTUREDEF(DamageReduction);
 
     FDamageCaptureDefs()
     {
@@ -25,6 +26,7 @@ struct FDamageCaptureDefs
         DEFINE_ATTRIBUTE_CAPTUREDEF(URiftTrialAttributeSet, MagicPenetrationFlat, Source, false);
         DEFINE_ATTRIBUTE_CAPTUREDEF(URiftTrialAttributeSet, MagicPenetrationPercent, Source, false);
         DEFINE_ATTRIBUTE_CAPTUREDEF(URiftTrialAttributeSet, CritChance, Source, false);
+        DEFINE_ATTRIBUTE_CAPTUREDEF(URiftTrialAttributeSet, DamageReduction, Target, false);
     }
 };
 
@@ -82,6 +84,7 @@ UExecCalc_Damage::UExecCalc_Damage()
     RelevantAttributesToCapture.Add(Defs.MagicPenetrationFlatDef);
     RelevantAttributesToCapture.Add(Defs.MagicPenetrationPercentDef);
     RelevantAttributesToCapture.Add(Defs.CritChanceDef);
+    RelevantAttributesToCapture.Add(Defs.DamageReductionDef);
 }
 
 void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
@@ -105,7 +108,15 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
     float Damage = 0.f;
 
-    // Per damage-type: apply resistance and penetration
+    // ===== 真实伤害：跳过所有抵抗和减伤 =====
+    const float TrueDamageValue = Spec.GetSetByCallerMagnitude(
+        FRiftTrialGameplayTags::Get().Damage_True, false, 0.f);
+    if (TrueDamageValue > 0.f)
+    {
+        Damage += TrueDamageValue;
+    }
+
+    // Per damage-type (Physical / Magical): apply resistance and penetration
     for (const auto& [DamageTypeTag, ResDef] : ResistanceMap)
     {
         const float DamageTypeValue = Spec.GetSetByCallerMagnitude(DamageTypeTag, false, 0.f);
@@ -138,6 +149,15 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
         }
 
         Damage += DamageTypeValue * Multiplier;
+    }
+
+    // ===== 目标减伤系数（仅对非真伤生效） =====
+    {
+        float TargetDamageReduction = 0.f;
+        ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
+            CaptureDefs().DamageReductionDef, EvaluateParameters, TargetDamageReduction);
+        TargetDamageReduction = FMath::Clamp(TargetDamageReduction, 0.f, 1.f);
+        Damage *= (1.f - TargetDamageReduction);
     }
 
     // Critical hit

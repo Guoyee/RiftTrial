@@ -210,6 +210,10 @@ void FRiftTrialGameplayTags::InitializeNativeGameplayTags()
         FName("Damage.Magical"),
         FString("Magical Damage Type")
     );
+    SingletonGameplayTags.Damage_True = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Damage.True"),
+        FString("True Damage — 无视一切减伤")
+    );
 
     /*
      * DamageType → Resistance Mappings
@@ -229,6 +233,10 @@ void FRiftTrialGameplayTags::InitializeNativeGameplayTags()
         FName("Effects.HitReact"),
         FString("HitReact")
     );
+    SingletonGameplayTags.Effects_Silence = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Effects.Silence"),
+        FString("Silence — 禁止施法")
+    );
     SingletonGameplayTags.State_Dead = UGameplayTagsManager::Get().AddNativeGameplayTag(
         FName("State.Dead"),
         FString("Actor is dead")
@@ -236,6 +244,18 @@ void FRiftTrialGameplayTags::InitializeNativeGameplayTags()
     SingletonGameplayTags.State_Aggroed = UGameplayTagsManager::Get().AddNativeGameplayTag(
         FName("State.Aggroed"),
         FString("Aggroed by tower, highest priority target")
+    );
+    SingletonGameplayTags.State_Spinning = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("State.Spinning"),
+        FString("Garen E — 转圈中，阻塞普攻")
+    );
+    SingletonGameplayTags.State_EmpoweredAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("State.EmpoweredAttack"),
+        FString("Garen Q — 强化普攻待命")
+    );
+    SingletonGameplayTags.State_Silenced = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("State.Silenced"),
+        FString("被沉默 — 禁止施法")
     );
     SingletonGameplayTags.Type_Minion = UGameplayTagsManager::Get().AddNativeGameplayTag(
         FName("Type.Minion"),
@@ -280,5 +300,101 @@ void FRiftTrialGameplayTags::InitializeNativeGameplayTags()
     SingletonGameplayTags.Event_Montage_AttackHit = UGameplayTagsManager::Get().AddNativeGameplayTag(
         FName("Event.Montage.AttackHit"),
         FString("AnimNotify event to trigger damage during attack montage")
+    );
+    SingletonGameplayTags.Event_Montage_Garen_SpinTick = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Event.Montage.Garen.SpinTick"),
+        FString("Garen E — 每次旋转伤害帧")
+    );
+    SingletonGameplayTags.GameplayCue_Garen_E_Spin = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayCue.Garen.E.Spin"),
+        FString("Garen E — 旋转 VFX")
+    );
+    SingletonGameplayTags.GameplayCue_Garen_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayCue.Garen.Attack"),
+        FString("Garen 普攻 — 挥砍 VFX")
+    );
+    SingletonGameplayTags.GameplayCue_Garen_Q = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayCue.Garen.Q"),
+        FString("Garen Q — 加速/武器发光 VFX")
+    );
+    SingletonGameplayTags.GameplayCue_Garen_W = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayCue.Garen.W"),
+        FString("Garen W — 护盾 VFX")
+    );
+    SingletonGameplayTags.GameplayCue_Garen_R = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayCue.Garen.R"),
+        FString("Garen R — 巨剑斩杀 VFX")
+    );
+
+    /*
+     * Garen Q
+     */
+    SingletonGameplayTags.Ability_Garen_Q = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Ability.Garen.Q"),
+        FString("Garen Q — 致命打击")
+    );
+    SingletonGameplayTags.Cooldown_Garen_Q = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Cooldown.Garen.Q"),
+        FString("Garen Q Cooldown")
+    );
+
+    /*
+     * Garen W
+     */
+    SingletonGameplayTags.Ability_Garen_W = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Ability.Garen.W"),
+        FString("Garen W — 勇气")
+    );
+    SingletonGameplayTags.Cooldown_Garen_W = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Cooldown.Garen.W"),
+        FString("Garen W Cooldown")
+    );
+
+    /*
+     * Garen E
+     */
+    SingletonGameplayTags.Ability_Garen_E = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Ability.Garen.E"),
+        FString("Garen E — 审判")
+    );
+    SingletonGameplayTags.Cooldown_Garen_E = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Cooldown.Garen.E"),
+        FString("Garen E Cooldown")
+    );
+
+    /*
+     * Garen R
+     */
+    SingletonGameplayTags.Ability_Garen_R = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Ability.Garen.R"),
+        FString("Garen R — 德玛西亚正义")
+    );
+    SingletonGameplayTags.Cooldown_Garen_R = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Cooldown.Garen.R"),
+        FString("Garen R Cooldown")
+    );
+
+    /*
+     * 数据传递 Tag（SetByCaller）
+     */
+    SingletonGameplayTags.Data_CooldownDuration = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Data.CooldownDuration"),
+        FString("SetByCaller — 技能基础冷却时长")
+    );
+    SingletonGameplayTags.Data_BuffDuration = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Data.BuffDuration"),
+        FString("SetByCaller — Buff 持续时间")
+    );
+    SingletonGameplayTags.Data_BuffMagnitude = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Data.BuffMagnitude"),
+        FString("SetByCaller — Buff 数值（如加速百分比）")
+    );
+
+    /*
+     * 减伤属性
+     */
+    SingletonGameplayTags.Attributes_Defense_DamageReduction = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Attributes.Defense.DamageReduction"),
+        FString("伤害减免系数 (0.0~1.0)")
     );
 }

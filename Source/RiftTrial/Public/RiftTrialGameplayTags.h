@@ -72,13 +72,18 @@ public:
     FGameplayTag Damage;
     FGameplayTag Damage_Physical;
     FGameplayTag Damage_Magical;
+    FGameplayTag Damage_True;
 
     TMap<FGameplayTag, FGameplayTag> DamageTypeToResistances;
 
     // ===== Effects =====
     FGameplayTag Effects_HitReact;
+    FGameplayTag Effects_Silence;
     FGameplayTag State_Dead;
     FGameplayTag State_Aggroed;
+    FGameplayTag State_Spinning;
+    FGameplayTag State_EmpoweredAttack;
+    FGameplayTag State_Silenced;
     FGameplayTag Type_Minion;
     FGameplayTag Type_Hero;
     FGameplayTag Type_Tower;
@@ -89,6 +94,30 @@ public:
     FGameplayTag Cooldown_Attack;
     FGameplayTag Event_Montage_SpawnProjectile;
     FGameplayTag Event_Montage_AttackHit;
+    FGameplayTag Event_Montage_Garen_SpinTick;
+    FGameplayTag GameplayCue_Garen_E_Spin;
+    FGameplayTag GameplayCue_Garen_Attack;
+    FGameplayTag GameplayCue_Garen_Q;
+    FGameplayTag GameplayCue_Garen_W;
+    FGameplayTag GameplayCue_Garen_R;
+
+    // ===== Garen 技能 =====
+    FGameplayTag Ability_Garen_Q;
+    FGameplayTag Cooldown_Garen_Q;
+    FGameplayTag Ability_Garen_W;
+    FGameplayTag Cooldown_Garen_W;
+    FGameplayTag Ability_Garen_E;
+    FGameplayTag Cooldown_Garen_E;
+    FGameplayTag Ability_Garen_R;
+    FGameplayTag Cooldown_Garen_R;
+
+    // ===== 减伤属性 Tag =====
+    FGameplayTag Attributes_Defense_DamageReduction;
+
+    // ===== 数据传递 Tag（SetByCaller）=====
+    FGameplayTag Data_CooldownDuration;
+    FGameplayTag Data_BuffDuration;
+    FGameplayTag Data_BuffMagnitude;
 
 private:
     static FRiftTrialGameplayTags SingletonGameplayTags;

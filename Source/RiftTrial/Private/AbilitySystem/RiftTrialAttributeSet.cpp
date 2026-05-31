@@ -13,6 +13,8 @@
 URiftTrialAttributeSet::URiftTrialAttributeSet()
 {
     InitMoveSpeed(600.f);
+    InitAttackRange(150.f); // 默认近战攻击范围
+    InitDamageReduction(0.f);
 
     const FRiftTrialGameplayTags& GameplayTags = FRiftTrialGameplayTags::Get();
 
@@ -47,6 +49,9 @@ URiftTrialAttributeSet::URiftTrialAttributeSet()
     TagsToAttributeMap.Add(GameplayTags.Attributes_Utility_HealthRegeneration, GetHealthRegenerationAttribute);
     TagsToAttributeMap.Add(GameplayTags.Attributes_Utility_ManaRegeneration, GetManaRegenerationAttribute);
     TagsToAttributeMap.Add(GameplayTags.Attributes_Utility_Tenacity, GetTenacityAttribute);
+
+    // Defense (extended)
+    TagsToAttributeMap.Add(GameplayTags.Attributes_Defense_DamageReduction, GetDamageReductionAttribute);
 }
 
 void URiftTrialAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -76,6 +81,7 @@ void URiftTrialAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimePr
     DOREPLIFETIME_CONDITION_NOTIFY(URiftTrialAttributeSet, HealthRegeneration, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(URiftTrialAttributeSet, ManaRegeneration, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(URiftTrialAttributeSet, Tenacity, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(URiftTrialAttributeSet, DamageReduction, COND_None, REPNOTIFY_Always);
 }
 
 void URiftTrialAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
@@ -203,3 +209,4 @@ RIFTTRIAL_REPNOTIFY(AttackRange)
 RIFTTRIAL_REPNOTIFY(HealthRegeneration)
 RIFTTRIAL_REPNOTIFY(ManaRegeneration)
 RIFTTRIAL_REPNOTIFY(Tenacity)
+RIFTTRIAL_REPNOTIFY(DamageReduction)

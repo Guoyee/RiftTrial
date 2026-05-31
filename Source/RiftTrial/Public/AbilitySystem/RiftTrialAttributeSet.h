@@ -147,6 +147,11 @@ public:
     FGameplayAttributeData Tenacity;
     ATTRIBUTE_ACCESSORS(URiftTrialAttributeSet, Tenacity);
 
+    // W等减伤技能使用 (0.0~1.0)
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_DamageReduction, Category = "Defense")
+    FGameplayAttributeData DamageReduction;
+    ATTRIBUTE_ACCESSORS(URiftTrialAttributeSet, DamageReduction);
+
     // ===== Meta (transient, not replicated) =====
     UPROPERTY(BlueprintReadOnly, Category = "Meta")
     FGameplayAttributeData IncomingDamage;
@@ -173,6 +178,7 @@ public:
     UFUNCTION() void OnRep_HealthRegeneration(const FGameplayAttributeData& Old) const;
     UFUNCTION() void OnRep_ManaRegeneration(const FGameplayAttributeData& Old) const;
     UFUNCTION() void OnRep_Tenacity(const FGameplayAttributeData& Old) const;
+    UFUNCTION() void OnRep_DamageReduction(const FGameplayAttributeData& Old) const;
 
 private:
     void SetAffectProperties(const struct FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const;

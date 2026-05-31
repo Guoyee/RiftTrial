@@ -3,8 +3,8 @@
 
 #include "AbilitySystem/RiftTrialAbilitySystemComponent.h"
 
-#include "RiftTrialGameplayTags.h"
 #include "AbilitySystem/Abilities/RiftTrialGameplayAbility.h"
+#include "RiftTrialGameplayTags.h"
 
 void URiftTrialAbilitySystemComponent::AbilityActorInfoSet()
 {

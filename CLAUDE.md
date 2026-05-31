@@ -110,7 +110,12 @@ Defaults: `InitMoveSpeed(600.f)` in AttributeSet constructor. Attributes initial
 - **PreAttributeChange clamp order**: MaxHealth modifier must come before Health modifier in GE, or Health gets clamped to 0.
 - **ExecCalc EffectContext**: Always type-check via GetScriptStruct() before static_cast. Crash occurred when context was base type.
 - **Edit/Write approval**: User prefers to approve all edits. Previously configured ask permission for Edit/Write tools.
-- **No proactive commits**: Only commit when user explicitly asks.
+- **No proactive commits**: Only commit when user explicitly asks. When user asks to commit:
+  - Split changes into logical feature commits (one commit per concern), not one big commit
+  - Commit message format: English `type: short subject`, multi-line body with bullet points for details
+  - End each commit with `Co-Authored-By: DeepSeek V4 Pro`
+  - Use `git add <specific files>` per commit group, not `git add -A`
+  - Use HEREDOC for multi-line messages: `git commit -m "$(cat <<'EOF' ... EOF)"`
 - **UPROPERTY Categories**: Use `"RiftTrial|Xxx"` format for ALL UPROPERTY categories. Examples: `"RiftTrial|Ability"`, `"RiftTrial|Cooldown"`, `"RiftTrial|Buff"`, `"RiftTrial|E"`, `"RiftTrial|Q"`, `"RiftTrial|R"`. Never use `"Garen|X"` or other un-prefixed forms.
 - **ASC 职责边界**: ASC 只负责按键分发（`AbilitySpecInputPressed` → `TryActivateAbility`），不得包含任何技能业务逻辑（如"再次按键取消"、"按键切换形态"等）。业务逻辑通过重写 `UGameplayAbility::InputPressed()` 在 Ability 子类中实现。原因是 `AbilitySpec.Ability` 指向 CDO 而非实例，在 ASC 中操作会导致状态污染。
 - **注释保留**: 添加新代码时，不得删除或覆盖文件中已有的、与本次修改无关的注释。只修改与改动相关的行。

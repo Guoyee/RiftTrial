@@ -181,18 +181,7 @@ if (Context->GetScriptStruct() == FMyContext::StaticStruct())
 
 **ASC 只负责按键分发**（`AbilitySpecInputPressed` → `TryActivateAbility`），技能业务逻辑（再次按键取消、形态切换等）必须通过重写 `UGameplayAbility::InputPressed()` 在 Ability 子类中实现。原因是 `AbilitySpec.Ability` 指向 CDO 而非实例，在 ASC 中操作会导致全局状态污染。
 
-### 双穿透伤害公式
 
-```cpp
-// 有效抗性 = 抗性 × (1 - 百分比穿透) - 固定穿透
-const float EffectiveResistance = Resistance * (1.f - PercentPen / 100.f) - FlatPen;
-
-// 伤害系数（LoL 公式）
-if (EffectiveResistance >= 0.f)
-    Multiplier = 100.f / (100.f + EffectiveResistance);
-else
-    Multiplier = 2.f - 100.f / (100.f - EffectiveResistance);  // 负抗性上限
-```
 
 ---
 

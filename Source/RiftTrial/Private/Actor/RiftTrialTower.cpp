@@ -114,7 +114,16 @@ void ARiftTrialTower::Die()
 
     if (AbilitySystemComponent)
     {
-        AbilitySystemComponent->AddLooseGameplayTag(FRiftTrialGameplayTags::Get().State_Dead);
+        if (DeathEffect)
+        {
+            FGameplayEffectContextHandle ContextHandle = AbilitySystemComponent->MakeEffectContext();
+            ContextHandle.AddSourceObject(this);
+            FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(DeathEffect, 1.f, ContextHandle);
+            if (SpecHandle.IsValid())
+            {
+                AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+            }
+        }
         AbilitySystemComponent->CancelAllAbilities();
     }
 

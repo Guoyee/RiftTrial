@@ -4,6 +4,7 @@
 #include "AIController.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemInterface.h"
+#include "Actor/RiftTrialTower.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Character/RiftTrialCharacterBase.h"
 #include "Interaction/CombatInterface.h"
@@ -73,6 +74,11 @@ void UBTService_FindNearestEnemy::TickNode(UBehaviorTreeComponent& OwnerComp, ui
 
     TArray<AActor*> AllActors;
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), ARiftTrialCharacterBase::StaticClass(), AllActors);
+
+    // 同时搜索防御塔
+    TArray<AActor*> TowerActors;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ARiftTrialTower::StaticClass(), TowerActors);
+    AllActors.Append(TowerActors);
 
     float NearestDist = AggroRange > 0.f ? AggroRange : FLT_MAX;
     AActor* NearestEnemy = nullptr;

@@ -116,6 +116,14 @@ void ARiftTrialCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
+    // 移动被标签阻断（眩晕/定身/施法中）
+    if (AbilitySystemComponent && AbilitySystemComponent->HasMatchingGameplayTag(
+        FRiftTrialGameplayTags::Get().State_Movement_Blocked))
+    {
+        GetCharacterMovement()->Velocity = FVector::ZeroVector;
+        return;
+    }
+
     // 指向性技能缓冲（范围外按下 → 走近 → 激活）
     if (BufferedAbilityTarget && IsValid(BufferedAbilityTarget))
     {

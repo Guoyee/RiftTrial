@@ -57,10 +57,12 @@ void ARiftTrialPlayerState::RespawnPawn()
     ACharacter* MyChar = Cast<ACharacter>(GetPawn());
     if (!MyChar) return;
 
-    // 移除死亡标签
+    // 移除死亡 GE（同时移除 State.Dead 标签，自动同步）
     if (UAbilitySystemComponent* ASC = GetAbilitySystemComponent())
     {
-        ASC->RemoveLooseGameplayTag(FRiftTrialGameplayTags::Get().State_Dead);
+        FGameplayTagContainer TagsToRemove;
+        TagsToRemove.AddTag(FRiftTrialGameplayTags::Get().State_Dead);
+        ASC->RemoveActiveEffectsWithGrantedTags(TagsToRemove);
     }
 
     // 恢复移动和碰撞

@@ -257,6 +257,14 @@ void FRiftTrialGameplayTags::InitializeNativeGameplayTags()
         FName("State.Silenced"),
         FString("被沉默 — 禁止施法")
     );
+    SingletonGameplayTags.State_Movement_Blocked = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("State.Movement.Blocked"),
+        FString("禁止移动 — 定身、眩晕、施法中复用")
+    );
+    SingletonGameplayTags.State_Ability_Blocked = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("State.Ability.Blocked"),
+        FString("禁止施法 — 眩晕、沉默复用")
+    );
     SingletonGameplayTags.Type_Minion = UGameplayTagsManager::Get().AddNativeGameplayTag(
         FName("Type.Minion"),
         FString("Minion type unit")
@@ -316,6 +324,10 @@ void FRiftTrialGameplayTags::InitializeNativeGameplayTags()
     SingletonGameplayTags.GameplayCue_Garen_Q = UGameplayTagsManager::Get().AddNativeGameplayTag(
         FName("GameplayCue.Garen.Q"),
         FString("Garen Q — 加速/武器发光 VFX")
+    );
+    SingletonGameplayTags.GameplayCue_Garen_Q_Weapon = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayCue.Garen.Q.Weapon"),
+        FString("Garen Q — 武器附魔 VFX（与 State.EmpoweredAttack 同步）")
     );
     SingletonGameplayTags.GameplayCue_Garen_W = UGameplayTagsManager::Get().AddNativeGameplayTag(
         FName("GameplayCue.Garen.W"),

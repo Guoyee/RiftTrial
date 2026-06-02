@@ -50,10 +50,10 @@ void ARiftTrialCharacterBase::Die()
         return;
     }
 
-    // 添加死亡标签，防止被 AI 继续索敌
-    if (AbilitySystemComponent)
+    // 添加死亡标签（GE 自动同步），防止被 AI 继续索敌
+    if (DeathEffect)
     {
-        AbilitySystemComponent->AddLooseGameplayTag(FRiftTrialGameplayTags::Get().State_Dead);
+        ApplayEffectToSelf(DeathEffect, 1.f);
     }
 
     // 停止 AI 行为树

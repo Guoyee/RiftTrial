@@ -3,7 +3,6 @@
 #include "AbilitySystem/Abilities/GarenRAbility.h"
 #include "AbilitySystemComponent.h"
 #include "Character/RiftTrialCharacter.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Interaction/CombatInterface.h"
@@ -107,11 +106,7 @@ void UGarenRAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 		return;
 	}
 
-	// 停止移动
-	if (ACharacter* Avatar = Cast<ACharacter>(ActorInfo->AvatarActor.Get()))
-	{
-		Avatar->GetCharacterMovement()->StopMovementImmediately();
-	}
+	// 移动阻断由 ActivationOwnedTags(State.Movement.Blocked) 自动管理
 
 	// VFX 施加在目标身上
 	if (UAbilitySystemComponent* TargetASC = RTarget->FindComponentByClass<UAbilitySystemComponent>())

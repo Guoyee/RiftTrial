@@ -19,7 +19,7 @@ const FGameplayTagContainer* UHeroGameplayAbility::GetCooldownTags() const
 	// 合并 GE 自身标签 + 动态 CooldownTag
 	if (const UGameplayEffect* CDO = GetCooldownGameplayEffect())
 	{
-		CachedCooldownTags.AppendTags(CDO->InheritableOwnedTagsContainer.CombinedTags);
+		CachedCooldownTags.AppendTags(CDO->GetGrantedTags());
 	}
 
 	if (CooldownTag.IsValid())
@@ -98,8 +98,9 @@ void UHeroGameplayAbility::ApplySelfBuffs()
 			Spec.Data.Get()->DynamicGrantedTags.AppendTags(TempContainer);
 		}
 
-		ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
-	}
+
+        ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+    }
 }
 
 // ── 鼠标悬停目标（指向性技能）──

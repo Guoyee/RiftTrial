@@ -84,6 +84,8 @@ public:
     FGameplayTag State_Spinning;
     FGameplayTag State_EmpoweredAttack;
     FGameplayTag State_Silenced;
+    FGameplayTag State_Movement_Blocked;
+    FGameplayTag State_Ability_Blocked;
     FGameplayTag Type_Minion;
     FGameplayTag Type_Hero;
     FGameplayTag Type_Tower;
@@ -98,6 +100,7 @@ public:
     FGameplayTag GameplayCue_Garen_E_Spin;
     FGameplayTag GameplayCue_Garen_Attack;
     FGameplayTag GameplayCue_Garen_Q;
+    FGameplayTag GameplayCue_Garen_Q_Weapon;
     FGameplayTag GameplayCue_Garen_W;
     FGameplayTag GameplayCue_Garen_R;
 

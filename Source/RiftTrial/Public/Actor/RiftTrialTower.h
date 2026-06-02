@@ -82,6 +82,10 @@ protected:
     UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "RiftTrial|Attribute")
     TSubclassOf<UGameplayEffect> IdentityEffect;
 
+    // 死亡标签 GE（State.Dead），Duration=Infinite
+    UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "RiftTrial|Attribute")
+    TSubclassOf<UGameplayEffect> DeathEffect;
+
     UPROPERTY(EditAnywhere, Category = "RiftTrial|Ability")
     TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
 
